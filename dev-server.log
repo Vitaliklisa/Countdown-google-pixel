@@ -11,3 +11,31 @@
 [2m8:37:43 a.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct, /src/components/until-app.tsx[22m
 [2m8:37:43 a.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/until-app.tsx[22m
 [2m8:37:43 a.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m program reload
+[with-app-env] DATABASE_URL set — using Postgres (Neon).
+
+  [32m[1mVITE[22m v8.2.2[39m  [2mready in [0m[1m1669[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m8080[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://26.104.135.153:[1m8080[22m/[39m  [2mRadmin VPN[22m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.40.156:[1m8080[22m/[39m  [2mWiFi[22m
+[2m6:25:07 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m connected.
+[2m6:25:21 p.m.[22m [36m[1m[vite][22m[39m [32m.env.local changed, restarting server...[39m
+[with-app-env] DATABASE_URL set — using Postgres (Neon).
+[with-app-env] GOOGLE_CLIENT_ID set — direct Google sign-in enabled.
+
+  [32m[1mVITE[22m v8.2.2[39m  [2mready in [0m[1m1095[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m8080[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://26.104.135.153:[1m8080[22m/[39m  [2mRadmin VPN[22m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.40.156:[1m8080[22m/[39m  [2mWiFi[22m
+[2m6:27:28 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m connected.
+[2m6:27:42 p.m.[22m [36m[1m[vite][22m[39m [32m.env.local changed, restarting server...[39m
+[2m6:27:42 p.m.[22m [36m[1m[vite][22m[39m server restarted.
+[with-app-env] DATABASE_URL set — using Postgres (Neon).
+
+  [32m[1mVITE[22m v8.2.2[39m  [2mready in [0m[1m1146[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m8080[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://26.104.135.153:[1m8080[22m/[39m  [2mRadmin VPN[22m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.40.156:[1m8080[22m/[39m  [2mWiFi[22m
+[2m6:28:33 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m connected.

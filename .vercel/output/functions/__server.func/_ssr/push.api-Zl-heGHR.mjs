@@ -2,8 +2,8 @@ import { r as createServerFn } from "./ssr.mjs";
 import { Qt as string, Vt as _enum, Yt as object } from "../_libs/@better-auth/core+[...].mjs";
 import { r as getSql } from "./db-DV8XdeM_.mjs";
 import { t as createServerRpc } from "./createServerRpc-CcvdN_gc.mjs";
-import { t as authMiddleware } from "./middleware-P0GAgHmU.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/push.api-Cj9sdGVl.js
+import { t as authMiddleware } from "./middleware-Dl9kJFpL.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/push.api-Zl-heGHR.js
 /**
 * Device push-token registry.
 *

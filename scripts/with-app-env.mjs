@@ -159,6 +159,16 @@ function main(argv) {
     // One line of feedback so "am I on Neon or PGLite?" is never a guess.
     console.log("[with-app-env] DATABASE_URL set — using Postgres (Neon).");
   }
+
+  // Publish "is direct Google sign-in configured?" to the CLIENT as a VITE_ flag.
+  // GOOGLE_CLIENT_ID is server-only and must never reach the browser, so the
+  // login UI cannot check it directly; this boolean is what tells it which button
+  // to render. Derived here (not hand-set) so it cannot drift from the server
+  // config, and an explicit VITE_GOOGLE_DIRECT still wins for a manual override.
+  env.VITE_GOOGLE_DIRECT ??= env.GOOGLE_CLIENT_ID ? "true" : "false";
+  if (env.VITE_GOOGLE_DIRECT === "true") {
+    console.log("[with-app-env] GOOGLE_CLIENT_ID set — direct Google sign-in enabled.");
+  }
   const child = spawn(command, args, {
     stdio: "inherit",
     env,

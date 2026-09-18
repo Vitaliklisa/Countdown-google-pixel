@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { signIn, authClient, GROK_PROVIDERS } from "@/lib/auth/client";
+import { signIn, signInGoogle, authClient, googleDirectEnabled, GROK_PROVIDERS } from "@/lib/auth/client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClockIcon } from "lucide-animated";
@@ -7,6 +7,30 @@ import { ClockIcon } from "lucide-animated";
 export const Route = createFileRoute("/login")({
   component: Login,
 });
+
+/** The Google "G" mark, inline so it needs no asset fetch. */
+function GoogleMark() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+      <path
+        fill="#4285F4"
+        d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 0 1-1.8 2.72v2.26h2.92c1.7-1.57 2.68-3.88 2.68-6.62Z"
+      />
+      <path
+        fill="#34A853"
+        d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.92-2.26c-.81.54-1.84.86-3.04.86-2.34 0-4.32-1.58-5.03-3.7H.96v2.33A9 9 0 0 0 9 18Z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M3.97 10.72a5.4 5.4 0 0 1 0-3.44V4.95H.96a9 9 0 0 0 0 8.1l3.01-2.33Z"
+      />
+      <path
+        fill="#EA4335"
+        d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 0 0 .96 4.95l3.01 2.33C4.68 5.16 6.66 3.58 9 3.58Z"
+      />
+    </svg>
+  );
+}
 
 function Login() {
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +48,19 @@ function Login() {
     }
   };
 
+  // Direct Google (app's own OAuth client). Preferred when configured because it
+  // needs no broker provisioning and works on any deployed origin.
+  const handleGoogleDirect = async () => {
+    setLoadingProvider("google");
+    setError(null);
+    try {
+      await signInGoogle({ callbackURL: "/" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed");
+      setLoadingProvider(null);
+    }
+  };
+
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center bg-canvas px-6">
       <div className="flex w-full max-w-sm flex-col gap-8 text-center">
@@ -36,22 +73,36 @@ function Login() {
         </div>
 
         <div className="flex flex-col gap-3">
-          {GROK_PROVIDERS.map((provider) => (
+          {googleDirectEnabled ? (
             <Button
-              key={provider.providerId}
               variant="outline"
               className="h-12 w-full justify-start gap-3 px-4"
-              onClick={() => handleSignIn(provider.providerId)}
+              onClick={() => void handleGoogleDirect()}
               disabled={!!loadingProvider}
             >
-              <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm bg-surface text-[10px] font-semibold text-accent">
-                {provider.label.slice(0, 1)}
-              </span>
-              <span>
-                {loadingProvider === provider.providerId ? "Connecting..." : `Continue with ${provider.label}`}
-              </span>
+              <GoogleMark />
+              <span>{loadingProvider === "google" ? "Connecting…" : "Continue with Google"}</span>
             </Button>
-          ))}
+          ) : (
+            GROK_PROVIDERS.map((provider) => (
+              <Button
+                key={provider.providerId}
+                variant="outline"
+                className="h-12 w-full justify-start gap-3 px-4"
+                onClick={() => handleSignIn(provider.providerId)}
+                disabled={!!loadingProvider}
+              >
+                <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm bg-surface text-[10px] font-semibold text-accent">
+                  {provider.label.slice(0, 1)}
+                </span>
+                <span>
+                  {loadingProvider === provider.providerId
+                    ? "Connecting..."
+                    : `Continue with ${provider.label}`}
+                </span>
+              </Button>
+            ))
+          )}
         </div>
 
         {error && (

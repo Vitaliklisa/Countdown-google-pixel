@@ -5,7 +5,7 @@ import { an as createFetch, nn as capitalizeFirstLetter, on as isSafeUrlScheme, 
 import { n as PACKAGE_VERSION, r as getBaseURL, t as GENERIC_OAUTH_ERROR_CODES } from "./url-DwGxbmbA.mjs";
 import { a as atom, i as onSet, n as STORE_UNMOUNT_DELAY, r as onMount, t as listenKeys } from "../_libs/nanostores.mjs";
 import { n as defu } from "../_libs/defu.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/client-B40BzJxt.js
+//#region node_modules/.nitro/vite/services/ssr/assets/client-HjgKo5-L.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var genericOAuthClient = () => {
 	return {
@@ -867,7 +867,9 @@ var client_exports = /* @__PURE__ */ __exportAll({
 	authClient: () => authClient,
 	authEnabled: () => true,
 	getBearerToken: () => getBearerToken,
+	googleDirectEnabled: () => false,
 	signIn: () => signIn,
+	signInGoogle: () => signInGoogle,
 	signOut: () => signOut
 });
 /**
@@ -965,6 +967,29 @@ async function signIn(providerId, opts = {}) {
 	if (data?.url) window.location.href = data.url;
 }
 /**
+* Start sign-in with Google DIRECTLY (not through the broker).
+*
+* Uses Better Auth's `social` flow, which hits this app's own
+* `/api/auth/sign-in/social` and redirects to Google with the app's own client
+* id. Distinct from `signIn()` above, which drives the broker's `oauth2`
+* provider — the two register different endpoints (`/callback/google` vs
+* `/oauth2/callback/<providerId>`), so they cannot share a code path.
+*
+* Redirect-based (no popup) in every environment: a direct Google OAuth
+* redirect returns to this app's origin, which works top-level on a deployed
+* host. In the live-preview iframe we keep using the broker popup instead — the
+* UI only offers this button when `googleDirectEnabled` is true.
+*/
+async function signInGoogle(opts = {}) {
+	const { data, error } = await authClient.signIn.social({
+		provider: "google",
+		callbackURL: opts.callbackURL ?? "/",
+		errorCallbackURL: opts.errorCallbackURL ?? "/login"
+	});
+	if (error) throw new Error(error.message ?? "Google sign-in failed");
+	if (data?.url) window.location.href = data.url;
+}
+/**
 * Open `/auth/popup` in a new window. Must run synchronously inside the click
 * handler (no await before this). The path is served by the template Vite
 * plugin (`authPopupPlugin` in vite.config.ts) — NOT by a React route.
@@ -1039,4 +1064,4 @@ async function signOut(redirectTo = "/") {
 	});
 }
 //#endregion
-export { signOut as i, client_exports as n, signIn as r, authClient as t };
+export { signOut as a, client_exports as n, signIn as r, authClient as t };

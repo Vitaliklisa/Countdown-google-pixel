@@ -11,7 +11,7 @@ import { n as createHash, t as createTelemetry } from "../_libs/@better-auth/tel
 import { a as utf8ToBytes, i as managedNonce, n as bytesToHex, r as hexToBytes, t as xchacha20poly1305 } from "../_libs/noble__ciphers.mjs";
 import { t as Pool } from "../_libs/pg.mjs";
 import { randomBytes } from "node:crypto";
-//#region node_modules/.nitro/vite/services/ssr/assets/server-B5g-t8hu.js
+//#region node_modules/.nitro/vite/services/ssr/assets/server-BkyfbaNC.js
 function tryDecode$1(str) {
 	if (str.indexOf("%") === -1) return str;
 	try {
@@ -8924,6 +8924,10 @@ var database = databaseUrl ? new Pool({ connectionString: databaseUrl }) : {
 };
 /** Session token cookie name — also read by the live-preview popup completion page. */
 var SESSION_TOKEN_COOKIE = "__Host-grok-auth.session_token";
+var googleClientId = env$1("GOOGLE_CLIENT_ID");
+var googleClientSecret = env$1("GOOGLE_CLIENT_SECRET");
+var googleDirectEnabled = Boolean(googleClientId && googleClientSecret);
+var googleRedirectUri = explicitBaseURL ? `${explicitBaseURL.replace(/\/+$/, "")}/api/auth/callback/google` : void 0;
 var grokOAuthPlugin = authConfigured ? genericOAuth({ config: GROK_PROVIDERS.map(({ providerId, idp }) => ({
 	providerId,
 	clientId: grokClientId,
@@ -8945,6 +8949,11 @@ var auth = betterAuth({
 	baseURL,
 	secret: env$1("BETTER_AUTH_SECRET") ?? previewAuthSecret(),
 	database,
+	...googleDirectEnabled ? { socialProviders: { google: {
+		clientId: googleClientId,
+		clientSecret: googleClientSecret,
+		...googleRedirectUri ? { redirectURI: googleRedirectUri } : {}
+	} } } : {},
 	trustedOrigins,
 	account: {
 		encryptOAuthTokens: true,

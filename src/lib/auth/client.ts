@@ -37,6 +37,16 @@ export const authClient = createAuthClient({
  */
 export const authEnabled = import.meta.env.VITE_AUTH_ENABLED !== "false";
 
+/**
+ * Whether direct Google sign-in is configured (GOOGLE_CLIENT_ID present).
+ *
+ * Published as a VITE_ flag at build time because the client cannot read
+ * GOOGLE_CLIENT_ID itself (it is server-only, and must never reach the browser).
+ * When true the login screen offers Google directly; when false it falls back to
+ * the broker's provider list, so the UI matches whatever the server registered.
+ */
+export const googleDirectEnabled = import.meta.env.VITE_GOOGLE_DIRECT === "true";
+
 /** The upstream providers to render sign-in buttons for. */
 export { GROK_PROVIDERS };
 
@@ -149,6 +159,32 @@ export async function signIn(
     errorCallbackURL,
   });
   if (error) throw new Error(error.message ?? "Sign-in failed");
+  if (data?.url) window.location.href = data.url;
+}
+
+/**
+ * Start sign-in with Google DIRECTLY (not through the broker).
+ *
+ * Uses Better Auth's `social` flow, which hits this app's own
+ * `/api/auth/sign-in/social` and redirects to Google with the app's own client
+ * id. Distinct from `signIn()` above, which drives the broker's `oauth2`
+ * provider — the two register different endpoints (`/callback/google` vs
+ * `/oauth2/callback/<providerId>`), so they cannot share a code path.
+ *
+ * Redirect-based (no popup) in every environment: a direct Google OAuth
+ * redirect returns to this app's origin, which works top-level on a deployed
+ * host. In the live-preview iframe we keep using the broker popup instead — the
+ * UI only offers this button when `googleDirectEnabled` is true.
+ */
+export async function signInGoogle(
+  opts: { callbackURL?: string; errorCallbackURL?: string } = {},
+): Promise<void> {
+  const { data, error } = await authClient.signIn.social({
+    provider: "google",
+    callbackURL: opts.callbackURL ?? "/",
+    errorCallbackURL: opts.errorCallbackURL ?? "/login",
+  });
+  if (error) throw new Error(error.message ?? "Google sign-in failed");
   if (data?.url) window.location.href = data.url;
 }
 

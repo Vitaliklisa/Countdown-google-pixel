@@ -63,6 +63,65 @@ is the switch. That is why this file is mostly instructions rather than patches.
 `migrations/*.sql` is applied to this database automatically by `npm run build`
 (see "Deploy step" below) — you do not run migrations by hand.
 
+## Step 1b — Google sign-in (optional)
+
+The app supports Google sign-in through **your own** Google OAuth client, so
+sign-in works on your deployed domain without any platform-provisioned broker
+credentials.
+
+> **How it degrades:** `GOOGLE_CLIENT_ID` absent → the app falls back to the
+> broker's Google/X buttons. Nothing breaks; you simply don't get direct Google.
+> The flag that drives this is derived automatically (`VITE_GOOGLE_DIRECT`) from
+> the presence of `GOOGLE_CLIENT_ID` — never hand-set it.
+
+### 1. Create the OAuth client
+1. <https://console.cloud.google.com> → create/select a project.
+2. **APIs & Services → OAuth consent screen**
+   - User type **External**, app name `Until`, your support email.
+   - Scopes: `openid`, `userinfo.email`, `userinfo.profile`.
+   - While testing: add your own Google account under **Test users**.
+3. **APIs & Services → Credentials → Create credentials → OAuth client ID**
+   - Type **Web application**, name `Until Web`.
+   - **Authorized JavaScript origins:**
+     ```
+     https://countdown-google-pixel.vercel.app
+     http://localhost:8080
+     ```
+   - **Authorized redirect URIs:**
+     ```
+     https://countdown-google-pixel.vercel.app/api/auth/callback/google
+     http://localhost:8080/api/auth/callback/google
+     ```
+4. Copy the **Client ID** and **Client secret**.
+
+### 2. Set the env vars
+**Vercel → Settings → Environment Variables → Production:**
+
+| Key | Value | Notes |
+|---|---|---|
+| `GOOGLE_CLIENT_ID` | from Google Cloud | server-only |
+| `GOOGLE_CLIENT_SECRET` | from Google Cloud | server-only — **never** prefix with `VITE_` |
+
+And for local dev, add the same two lines to `.env.local` (gitignored).
+
+### 3. Redeploy
+On the next build, `scripts/with-app-env.mjs` sees `GOOGLE_CLIENT_ID` and sets
+`VITE_GOOGLE_DIRECT=true`, so the login screen swaps the broker buttons for a
+single **Continue with Google** button using the official mark.
+
+### Common failures
+| Symptom | Cause | Fix |
+|---|---|---|
+| `redirect_uri_mismatch` | the URI in Google Cloud differs from the actual callback | add the exact `https://<your-domain>/api/auth/callback/google` to Authorized redirect URIs |
+| `invalid_client` | wrong/rotated secret | re-copy the secret; check for a stray space |
+| Button missing after configuring | flag not derived | confirm `GOOGLE_CLIENT_ID` is set in the **Production** scope (not just Preview), then redeploy |
+| Broker buttons still show | env var not visible to the build | env vars must exist **at build time**, not only at runtime |
+
+**Android note:** Google OAuth inside a Capacitor WebView needs a custom URL
+scheme and separate Android OAuth client; it will not work out of the box. The
+APK can keep using email/password. Wiring Google inside the Android shell is a
+separate follow-up.
+
 ## Step 2 — Publish the app
 
 The platform deploys this repo to Vercel. On publish it injects:

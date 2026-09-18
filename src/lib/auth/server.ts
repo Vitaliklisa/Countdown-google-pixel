@@ -148,6 +148,32 @@ const database = databaseUrl
 /** Session token cookie name — also read by the live-preview popup completion page. */
 export const SESSION_TOKEN_COOKIE = "__Host-grok-auth.session_token";
 
+// ── Direct Google OAuth (optional, additive) ─────────────────
+// When GOOGLE_CLIENT_ID/SECRET are set, this app offers Google sign-in DIRECTLY
+// against Google — the app holds its own OAuth credentials instead of
+// federating through the shared broker. That is what lets sign-in work on an
+// arbitrary deployed origin without the broker's per-app provisioning.
+//
+// Deliberately ADDITIVE: when the vars are absent (preview, or a deploy that
+// hasn't set them yet) nothing is registered here and the broker path below is
+// used as before. Removing the broker outright would break Google/X sign-in
+// until the direct credentials exist, so both are registered when both are
+// configured and the sign-in UI prefers the direct one.
+const googleClientId = env("GOOGLE_CLIENT_ID");
+const googleClientSecret = env("GOOGLE_CLIENT_SECRET");
+const googleDirectEnabled = Boolean(googleClientId && googleClientSecret);
+
+// The exact callback URL Google will redirect back to. Derived from
+// BETTER_AUTH_URL when set (deployed), so it matches the value registered in the
+// Google Cloud console character-for-character. Better Auth would otherwise infer
+// it from the incoming request origin, and behind Vercel's proxy a mismatched
+// scheme/host produces Google's classic `redirect_uri_mismatch`. When there is no
+// explicit base URL (local dev), leave it undefined and let Better Auth build it
+// from the loopback origin, which is what the console entry covers as well.
+const googleRedirectUri = explicitBaseURL
+  ? `${explicitBaseURL.replace(/\/+$/, "")}/api/auth/callback/google`
+  : undefined;
+
 // Built separately so the `betterAuth({...})` call stays easy to edit without
 // breaking brackets (models often trip on the conditional plugin spread).
 const grokOAuthPlugin = authConfigured
@@ -178,6 +204,21 @@ export const auth = betterAuth({
   // globalThis so HMR doesn't invalidate PGLite-backed sessions (see above).
   secret: env("BETTER_AUTH_SECRET") ?? previewAuthSecret(),
   database,
+
+  // Direct Google sign-in, only when credentials are configured. Additive: an
+  // unconfigured deploy keeps using the broker provider below, so sign-in never
+  // regresses to "broken" while the Google client is being set up.
+  ...(googleDirectEnabled
+    ? {
+        socialProviders: {
+          google: {
+            clientId: googleClientId as string,
+            clientSecret: googleClientSecret as string,
+            ...(googleRedirectUri ? { redirectURI: googleRedirectUri } : {}),
+          },
+        },
+      }
+    : {}),
 
   // CSRF / origin check for credentialed auth POSTs (email sign-up/sign-in, …).
   // See `trustedOrigins` construction above — must cover live preview hosts AND

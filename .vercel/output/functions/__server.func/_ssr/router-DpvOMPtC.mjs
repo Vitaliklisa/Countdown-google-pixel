@@ -3,10 +3,10 @@ import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { f as createRouter, g as createRootRoute, h as createFileRoute, l as Scripts, m as lazyRouteComponent, p as Outlet, u as HeadContent, v as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].mjs";
 import { $t as union, Jt as number, Kt as literal, Qt as string, Yt as object } from "../_libs/@better-auth/core+[...].mjs";
-import { n as auth } from "./server-B5g-t8hu.mjs";
+import { n as auth } from "./server-BkyfbaNC.mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-Lgi7CSay.js
-var router_Lgi7CSay_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-DpvOMPtC.js
+var router_DpvOMPtC_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -306,7 +306,7 @@ function PreviewHostBridge() {
 * light ones.
 */
 var themeBootstrapScript = `(function(){try{var s=localStorage.getItem(${JSON.stringify("until.theme.v1")});var m=window.matchMedia("(prefers-color-scheme: dark)").matches;var t=s==="light"||s==="dark"?s:(m?"dark":"light");var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.dataset.theme=t;r.style.colorScheme=t;}catch(e){document.documentElement.classList.remove("dark");}})();`;
-var styles_default = "/assets/styles-BxzdT5WU.css";
+var styles_default = "/assets/styles-CZKUP5VF.css";
 var APP_NAME = "Until";
 var Route$3 = createRootRoute({
 	head: () => ({
@@ -369,9 +369,9 @@ var Route$3 = createRootRoute({
 		})]
 	})
 });
-var $$splitComponentImporter$1 = () => import("./routes-DJlEeju1.mjs").then((n) => n.t);
+var $$splitComponentImporter$1 = () => import("./routes-DBWmX4CI.mjs").then((n) => n.t);
 var Route$2 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
-var $$splitComponentImporter = () => import("./login-B6Rtw_SA.mjs");
+var $$splitComponentImporter = () => import("./login-Bq8w2Bgl.mjs");
 var Route$1 = createFileRoute("/login")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
 var Route = createFileRoute("/api/auth/$")({ server: { handlers: {
 	GET: ({ request }) => auth.handler(request),
@@ -402,4 +402,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_Lgi7CSay_exports as t };
+export { getRouter, router_DpvOMPtC_exports as t };
