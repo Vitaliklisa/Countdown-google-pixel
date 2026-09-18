@@ -1,0 +1,13 @@
+[with-app-env] DATABASE_URL set — using Postgres (Neon).
+
+  [32m[1mVITE[22m v8.2.2[39m  [2mready in [0m[1m1109[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m8080[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://26.104.135.153:[1m8080[22m/[39m  [2mRadmin VPN[22m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.40.156:[1m8080[22m/[39m  [2mWiFi[22m
+[2m8:35:18 a.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m connected.
+[2m8:37:15 a.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mdependencies optimized: [33m@better-auth/core/env, @better-auth/core/error, @better-auth/core/utils/error-codes, @better-auth/core/utils/string, @better-auth/core/utils/url, @better-fetch/fetch, @tanstack/router-core, @tanstack/router-core/isServer, @tanstack/router-core/ssr/client, defu, nanostores, seroval[32m[39m
+[2m8:37:15 a.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32moptimized dependencies changed. reloading[39m
+[2m8:37:43 a.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct, /src/components/until-app.tsx[22m
+[2m8:37:43 a.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/components/until-app.tsx[22m
+[2m8:37:43 a.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m program reload
