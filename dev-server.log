@@ -82,3 +82,4 @@ See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode de
   [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.40.156:[1m8080[22m/[39m  [2mWiFi[22m
 [2m8:25:54 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m connected.
 [2m8:28:57 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mandroid/build/reports/problems/problems-report.html[22m
+[2m8:29:04 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
