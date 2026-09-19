@@ -5,7 +5,7 @@ import { f as require_jsx_runtime, n as AvatarFallback$1, r as AvatarImage$1, t 
 import { a as getServerFnById, i as TSS_SERVER_FUNCTION, r as createServerFn, s as __exportAll } from "./ssr.mjs";
 import { Qt as string, Ut as array, Vt as _enum, Yt as object } from "../_libs/@better-auth/core+[...].mjs";
 import { a as signOut, t as authClient } from "./client-HjgKo5-L.mjs";
-import { t as authMiddleware } from "./middleware-Dl9kJFpL.mjs";
+import { t as authMiddleware } from "./middleware-FHwo2eyz.mjs";
 import { n as cn, t as Button } from "./button--AwAlf_W.mjs";
 import { a as HistoryIcon, c as PartyPopperIcon, d as TimerIcon, f as UserIcon, i as ClockIcon, l as PlusIcon, m as UsersIcon, n as CalendarDaysIcon, o as HourglassIcon, p as UserRoundPlusIcon, r as CheckIcon, s as LogoutIcon, t as ArrowLeftIcon, u as SparklesIcon } from "../_libs/lucide-animated+motion.mjs";
 import { n as ChevronDown, r as Check } from "../_libs/lucide-react.mjs";
@@ -13,7 +13,7 @@ import { a as differenceInMinutes, c as addYears, d as addMonths, f as addDays, 
 import { t as create } from "../_libs/zustand.mjs";
 import { a as Separator2, i as Root2, n as Item2, o as Trigger, r as Portal2, t as Content2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
 import { a as SelectItemIndicator, c as SelectTrigger$1, i as SelectItem$1, l as SelectValue$1, n as SelectContent$1, o as SelectItemText, r as SelectIcon, s as SelectPortal, t as Select$1, u as SelectViewport } from "../_libs/@radix-ui/react-select+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-DBWmX4CI.js
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-BCtAWjcJ.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -1351,7 +1351,7 @@ function UntilApp() {
 		if (isPending || !user?.id) return;
 		let cancelled = false;
 		(async () => {
-			const { registerPush } = await import("./push-DfzC2iNS.mjs");
+			const { registerPush } = await import("./push-CimCbc3B.mjs");
 			if (cancelled) return;
 			try {
 				await registerPush();

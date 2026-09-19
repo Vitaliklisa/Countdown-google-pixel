@@ -11,7 +11,7 @@ import { n as createHash, t as createTelemetry } from "../_libs/@better-auth/tel
 import { a as utf8ToBytes, i as managedNonce, n as bytesToHex, r as hexToBytes, t as xchacha20poly1305 } from "../_libs/noble__ciphers.mjs";
 import { t as Pool } from "../_libs/pg.mjs";
 import { randomBytes } from "node:crypto";
-//#region node_modules/.nitro/vite/services/ssr/assets/server-BkyfbaNC.js
+//#region node_modules/.nitro/vite/services/ssr/assets/server-BdEBU93I.js
 function tryDecode$1(str) {
 	if (str.indexOf("%") === -1) return str;
 	try {
@@ -8757,6 +8757,44 @@ function gateIdentitySessions() {
 		}] }
 	};
 }
+/**
+* Origin-trust helpers for Better Auth (dependency-free, unit-testable).
+*
+* Lives apart from `server.ts` because that module imports Better Auth, `pg` and
+* the `@/` path alias, none of which `node --test` can resolve — so a helper
+* defined there cannot be tested. This file imports nothing, so it can.
+*/
+/**
+* The set of origins a deployed app should accept, derived from its configured
+* `BETTER_AUTH_URL`.
+*
+* Trusting ONLY the exact configured origin breaks the other hostnames the SAME
+* deployment legitimately answers on, and sign-in then fails with "Invalid
+* origin":
+*   • Vercel branch/preview URLs  `<project>-git-<branch>-<team>.vercel.app`
+*   • per-deployment URLs         `<project>-<hash>-<team>.vercel.app`
+*   • the apex/www pair           `example.com`  +  `www.example.com`
+*
+* Still a closed set derived from configuration — never a blanket trust.
+*/
+function siblingDeployedOrigins(base) {
+	let url;
+	try {
+		url = new URL(base);
+	} catch {
+		return [];
+	}
+	const { protocol, hostname } = url;
+	const out = [`${protocol}//${hostname}`];
+	const siblingHost = hostname.startsWith("www.") ? hostname.slice(4) : `www.${hostname}`;
+	out.push(`${protocol}//${siblingHost}`);
+	if (hostname.endsWith(".vercel.app")) {
+		const project = hostname.replace(/\.vercel\.app$/i, "").split("-git-")[0];
+		out.push(`${protocol}//${project}.vercel.app`);
+		out.push(`${protocol}//${project}-*.vercel.app`);
+	}
+	return out;
+}
 /** Factory used by `auth/server.ts`: `pgliteDialect(() => getPglite())`. */
 function pgliteDialect(getClient) {
 	return {
@@ -8908,7 +8946,7 @@ var baseURL = explicitBaseURL ?? {
 	protocol: "auto",
 	fallback: "http://localhost:8080"
 };
-var trustedOrigins = explicitBaseURL ? [explicitBaseURL, ...LOCAL_DEV_ORIGINS] : [
+var trustedOrigins = explicitBaseURL ? [...siblingDeployedOrigins(explicitBaseURL), ...LOCAL_DEV_ORIGINS] : [
 	...previewAllowedHosts,
 	...previewAllowedHosts.flatMap((host) => [`https://${host}`, `http://${host}`]),
 	...LOCAL_DEV_ORIGINS

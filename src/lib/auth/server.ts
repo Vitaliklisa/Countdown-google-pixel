@@ -38,6 +38,7 @@ import { Pool } from "pg";
 import { ensureDbReady, getPglite } from "../db";
 import { emailAndPasswordEnabled } from "./email-password";
 import { GATE_PROVIDER_ID, gateIdentitySessions } from "./gate-session.server";
+import { siblingDeployedOrigins } from "./origins.pure";
 import { GROK_PROVIDERS } from "./providers";
 import { pgliteDialect } from "./pglite-dialect";
 import {
@@ -115,8 +116,18 @@ const baseURL = explicitBaseURL ?? {
 
 // Origins Better Auth accepts on credentialed POSTs (sign-up/sign-in, etc.).
 // Missing entries here surface as FORBIDDEN "Invalid origin".
-const trustedOrigins: string[] = explicitBaseURL
-  ? [explicitBaseURL, ...LOCAL_DEV_ORIGINS]
+//
+// Deployed (BETTER_AUTH_URL set): trusting ONLY that exact origin breaks the
+// other hostnames the SAME deployment legitimately answers on:
+//   • Vercel preview/branch URLs <project>-git-<branch>-<team>.vercel.app
+//   • Vercel deployment URLs      <project>-<hash>-<team>.vercel.app
+//   • the apex/www pair           example.com  +  www.example.com
+// Any of those loaded in a browser sends an Origin not in the list, and
+// sign-in fails with "Invalid origin". So we trust the configured origin AND
+// the sibling hostnames of its Vercel project / apex domain — still a closed
+// set derived from config, never a blanket "trust everything".
+export const trustedOrigins: string[] = explicitBaseURL
+  ? [...siblingDeployedOrigins(explicitBaseURL), ...LOCAL_DEV_ORIGINS]
   : [
       // Host wildcards (matched against Origin's host)
       ...previewAllowedHosts,
