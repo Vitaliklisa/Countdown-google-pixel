@@ -1,5 +1,5 @@
-import { $ as encode, A as jwtVerify, At as getCurrentAdapter, C as serializeSignedCookie, Ct as withSpan, D as decodeJwt, Dt as import_src, E as base64Url, Et as ATTR_OPERATION_ID, Ft as initGetModelName, Gt as email, Ht as any, It as initGetFieldName, Jt as number, Lt as generateId, Mt as runWithAdapter, Nt as runWithTransaction, O as decodeProtectedHeader, Ot as safeJSONParse, Pt as getBetterAuthVersion, Qt as string, Rt as createRandomStringGenerator, S as serializeCookie, Tt as ATTR_HOOK_TYPE, Ut as array, Wt as boolean, Xt as optional, Yt as object, Zt as record, _ as runWithRequestState, _n as isTest, a as createAuthorizationURL, b as createRouter$1, bn as kAPIErrorHeaderSymbol, c as createRateLimitKey, cn as createLogger, d as deprecate, dt as JWTExpired, f as createAuthEndpoint, fn as env, g as hasRequestState, gn as isProduction, h as defineRequestState, hn as isDevelopment, i as refreshAccessToken, in as betterFetch, jt as queueAfterTransactionHook, k as importJWK, kt as getAuthTables, l as findInvalidTrustedProxies, ln as logger, m as isAPIError, n as socialProviders, o as applyDefaultAccessTokenExpiry, p as createAuthMiddleware, qt as looseObject, r as validateAuthorizationCode, s as isLoopbackHost, sn as normalizePathname, t as SocialProviderListEnum, u as getIp, un as shouldPublishLog, v as getCurrentAuthContext, vn as APIError, w as filterOutputFields, wt as ATTR_CONTEXT, x as toResponse, xn as BASE_ERROR_CODES, y as runWithEndpointContext, yn as BetterAuthError } from "../_libs/@better-auth/core+[...].mjs";
-import { a as getOrigin, c as isRequestLike, i as getHost, l as resolveBaseURL, n as PACKAGE_VERSION, o as getProtocol, r as getBaseURL, s as isDynamicBaseURLConfig, t as GENERIC_OAUTH_ERROR_CODES, u as wildcardMatch } from "./url-DwGxbmbA.mjs";
+import { At as initGetModelName, Bt as email, C as decodeProtectedHeader, Ct as safeJSONParse, Dt as runWithAdapter, Et as queueAfterTransactionHook, Gt as optional, Ht as looseObject, J as encode, Kt as record, Lt as any, Mt as generateId, Nt as createRandomStringGenerator, Ot as runWithTransaction, Rt as array, S as base64Url, St as import_src, T as jwtVerify, Tt as getCurrentAdapter, Ut as number, Wt as object, _ as toResponse, a as findInvalidTrustedProxies, an as kAPIErrorHeaderSymbol, b as filterOutputFields, bt as ATTR_HOOK_TYPE, c as createAuthEndpoint, cn as logger, d as defineRequestState, dn as env, f as hasRequestState, g as createRouter$1, gn as isTest, h as runWithEndpointContext, hn as isProduction, i as createRateLimitKey, in as BetterAuthError, jt as initGetFieldName, kt as getBetterAuthVersion, l as createAuthMiddleware, ln as shouldPublishLog, m as getCurrentAuthContext, mn as isDevelopment, n as socialProviders, nn as normalizePathname, o as getIp, on as BASE_ERROR_CODES, ot as JWTExpired, p as runWithRequestState, qt as string, r as isLoopbackHost, rn as APIError, s as deprecate, sn as createLogger, t as SocialProviderListEnum, u as isAPIError, v as serializeCookie, vt as withSpan, w as importJWK, wt as getAuthTables, xt as ATTR_OPERATION_ID, y as serializeSignedCookie, yt as ATTR_CONTEXT, zt as boolean } from "../_libs/@better-auth/core+[...].mjs";
+import { a as isDynamicBaseURLConfig, c as wildcardMatch, i as getProtocol, n as getHost, o as isRequestLike, r as getOrigin, s as resolveBaseURL, t as getBaseURL } from "./url-Dj5TGTcl.mjs";
 import { n as defu, t as createDefu } from "../_libs/defu.mjs";
 import { n as getPglite, t as ensureDbReady } from "./db-DV8XdeM_.mjs";
 import { n as string$1, t as boolean$1 } from "../_libs/zod.mjs";
@@ -11,185 +11,7 @@ import { n as createHash, t as createTelemetry } from "../_libs/@better-auth/tel
 import { a as utf8ToBytes, i as managedNonce, n as bytesToHex, r as hexToBytes, t as xchacha20poly1305 } from "../_libs/noble__ciphers.mjs";
 import { t as Pool } from "../_libs/pg.mjs";
 import { randomBytes } from "node:crypto";
-//#region node_modules/.nitro/vite/services/ssr/assets/server-BdEBU93I.js
-function tryDecode$1(str) {
-	if (str.indexOf("%") === -1) return str;
-	try {
-		return decodeURIComponent(str);
-	} catch {
-		return str;
-	}
-}
-var SECURE_COOKIE_PREFIX = "__Secure-";
-/**
-* Split a comma-joined `Set-Cookie` header string into individual cookies.
-*/
-function splitSetCookieHeader(setCookie) {
-	if (!setCookie) return [];
-	const result = [];
-	let start = 0;
-	let i = 0;
-	while (i < setCookie.length) {
-		if (setCookie[i] === ",") {
-			let j = i + 1;
-			while (j < setCookie.length && setCookie[j] === " ") j++;
-			while (j < setCookie.length && setCookie[j] !== "=" && setCookie[j] !== ";" && setCookie[j] !== ",") j++;
-			if (j < setCookie.length && setCookie[j] === "=") {
-				const part = setCookie.slice(start, i).trim();
-				if (part) result.push(part);
-				start = i + 1;
-				while (start < setCookie.length && setCookie[start] === " ") start++;
-				i = start;
-				continue;
-			}
-		}
-		i++;
-	}
-	const last = setCookie.slice(start).trim();
-	if (last) result.push(last);
-	return result;
-}
-function parseSetCookieHeader(setCookie) {
-	const cookies = /* @__PURE__ */ new Map();
-	splitSetCookieHeader(setCookie).forEach((cookieString) => {
-		const [nameValue, ...attributes] = cookieString.split(";").map((part) => part.trim());
-		const [name, ...valueParts] = (nameValue || "").split("=");
-		const value = unquoteCookieValue(valueParts.join("="));
-		if (!name) return;
-		const attrObj = { value: tryDecode$1(value) };
-		attributes.forEach((attribute) => {
-			const [attrName, ...attrValueParts] = attribute.split("=");
-			const attrValue = attrValueParts.join("=");
-			const normalizedAttrName = attrName.trim().toLowerCase();
-			switch (normalizedAttrName) {
-				case "max-age":
-					attrObj["max-age"] = attrValue ? parseInt(attrValue.trim(), 10) : void 0;
-					break;
-				case "expires":
-					attrObj.expires = attrValue ? new Date(attrValue.trim()) : void 0;
-					break;
-				case "domain":
-					attrObj.domain = attrValue ? attrValue.trim() : void 0;
-					break;
-				case "path":
-					attrObj.path = attrValue ? attrValue.trim() : void 0;
-					break;
-				case "secure":
-					attrObj.secure = true;
-					break;
-				case "httponly":
-					attrObj.httponly = true;
-					break;
-				case "samesite":
-					attrObj.samesite = attrValue ? attrValue.trim().toLowerCase() : void 0;
-					break;
-				case "partitioned":
-					attrObj.partitioned = true;
-					break;
-				default: attrObj[normalizedAttrName] = attrValue ? attrValue.trim() : true;
-			}
-		});
-		cookies.set(name, attrObj);
-	});
-	return cookies;
-}
-function toCookieOptions(attributes) {
-	return {
-		maxAge: attributes["max-age"],
-		expires: attributes.expires,
-		domain: attributes.domain,
-		path: attributes.path,
-		secure: attributes.secure,
-		httpOnly: attributes.httponly,
-		sameSite: attributes.samesite,
-		partitioned: attributes.partitioned
-	};
-}
-/**
-* Cookie-name token char set per RFC 7230 §3.2.6.
-*
-* @see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6
-*/
-var cookieNameRegex = /^[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E\x5F\x60\x61-\x7A\x7C\x7E]+$/;
-/**
-* Cookie-value char set per RFC 6265 §4.1.1, plus space and comma.
-*
-* @see https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
-* @see https://github.com/golang/go/issues/7243
-*/
-var cookieValueRegex = /^[\x20\x21\x23-\x3A\x3C-\x5B\x5D-\x7E]*$/;
-/**
-* Strip surrounding double-quotes per RFC 6265 §4.1.1 quoted-string form.
-*
-* @see https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
-*/
-function unquoteCookieValue(value) {
-	if (value.length < 2 || !value.startsWith("\"") || !value.endsWith("\"")) return value;
-	return value.slice(1, -1);
-}
-/**
-* Trim leading/trailing OWS (space / horizontal tab) per RFC 7230 §3.2.3.
-* Narrower than `String.prototype.trim()`, which strips CR/LF and other
-* whitespace and would let CTLs escape `cookieValueRegex`.
-*
-* @see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.3
-*/
-function trimOWS(s) {
-	let start = 0;
-	let end = s.length;
-	while (start < end) {
-		const c = s.charCodeAt(start);
-		if (c !== 32 && c !== 9) break;
-		start++;
-	}
-	while (end > start) {
-		const c = s.charCodeAt(end - 1);
-		if (c !== 32 && c !== 9) break;
-		end--;
-	}
-	return start === 0 && end === s.length ? s : s.slice(start, end);
-}
-/**
-* Tolerates `;` separators without the SP that RFC 6265 §4.2.1 mandates,
-* since proxies and runtimes commonly strip it. Silently drops entries
-* whose name violates RFC 7230 token or whose value violates RFC 6265
-* cookie-octet (plus space and comma). Strips optional surrounding
-* double-quotes per RFC 6265 §4.1.1.
-*/
-function parseCookies(cookie) {
-	const cookieMap = /* @__PURE__ */ new Map();
-	if (cookie.length < 2) return cookieMap;
-	for (const chunk of cookie.split(";")) {
-		const eq = chunk.indexOf("=");
-		if (eq === -1) continue;
-		const key = trimOWS(chunk.slice(0, eq));
-		const val = unquoteCookieValue(trimOWS(chunk.slice(eq + 1)));
-		if (cookieNameRegex.test(key) && cookieValueRegex.test(val)) cookieMap.set(key, tryDecode$1(val));
-	}
-	return cookieMap;
-}
-/**
-* Add or replace a cookie in the request `Cookie` header.
-*
-* Cookie pairs are joined with `; `, but `headers.append("cookie", ...)`
-* joins with `, ` in some runtimes (e.g. Deno, Cloudflare Workers) and
-* breaks downstream cookie parsing. This builds the header value via
-* parse-mutate-serialize.
-*/
-function setRequestCookie(headers, name, value) {
-	const cookieMap = parseCookies(headers.get("cookie") || "");
-	if (cookieNameRegex.test(name)) cookieMap.set(name, value);
-	headers.set("cookie", Array.from(cookieMap, ([k, v]) => `${k}=${encodeURIComponent(v)}`).join("; "));
-}
-var GROK_PROVIDERS = [{
-	providerId: "grok-google",
-	idp: "google",
-	label: "Google"
-}, {
-	providerId: "grok-x",
-	idp: "twitter",
-	label: "X"
-}];
+//#region node_modules/.nitro/vite/services/ssr/assets/server-DHAPBQAY.js
 function env$2(key) {
 	return process.env[key]?.trim() || void 0;
 }
@@ -752,6 +574,175 @@ function parse(value) {
 */
 function sec(value) {
 	return Math.round(parse(value) / 1e3);
+}
+function tryDecode$1(str) {
+	if (str.indexOf("%") === -1) return str;
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return str;
+	}
+}
+var SECURE_COOKIE_PREFIX = "__Secure-";
+/**
+* Split a comma-joined `Set-Cookie` header string into individual cookies.
+*/
+function splitSetCookieHeader(setCookie) {
+	if (!setCookie) return [];
+	const result = [];
+	let start = 0;
+	let i = 0;
+	while (i < setCookie.length) {
+		if (setCookie[i] === ",") {
+			let j = i + 1;
+			while (j < setCookie.length && setCookie[j] === " ") j++;
+			while (j < setCookie.length && setCookie[j] !== "=" && setCookie[j] !== ";" && setCookie[j] !== ",") j++;
+			if (j < setCookie.length && setCookie[j] === "=") {
+				const part = setCookie.slice(start, i).trim();
+				if (part) result.push(part);
+				start = i + 1;
+				while (start < setCookie.length && setCookie[start] === " ") start++;
+				i = start;
+				continue;
+			}
+		}
+		i++;
+	}
+	const last = setCookie.slice(start).trim();
+	if (last) result.push(last);
+	return result;
+}
+function parseSetCookieHeader(setCookie) {
+	const cookies = /* @__PURE__ */ new Map();
+	splitSetCookieHeader(setCookie).forEach((cookieString) => {
+		const [nameValue, ...attributes] = cookieString.split(";").map((part) => part.trim());
+		const [name, ...valueParts] = (nameValue || "").split("=");
+		const value = unquoteCookieValue(valueParts.join("="));
+		if (!name) return;
+		const attrObj = { value: tryDecode$1(value) };
+		attributes.forEach((attribute) => {
+			const [attrName, ...attrValueParts] = attribute.split("=");
+			const attrValue = attrValueParts.join("=");
+			const normalizedAttrName = attrName.trim().toLowerCase();
+			switch (normalizedAttrName) {
+				case "max-age":
+					attrObj["max-age"] = attrValue ? parseInt(attrValue.trim(), 10) : void 0;
+					break;
+				case "expires":
+					attrObj.expires = attrValue ? new Date(attrValue.trim()) : void 0;
+					break;
+				case "domain":
+					attrObj.domain = attrValue ? attrValue.trim() : void 0;
+					break;
+				case "path":
+					attrObj.path = attrValue ? attrValue.trim() : void 0;
+					break;
+				case "secure":
+					attrObj.secure = true;
+					break;
+				case "httponly":
+					attrObj.httponly = true;
+					break;
+				case "samesite":
+					attrObj.samesite = attrValue ? attrValue.trim().toLowerCase() : void 0;
+					break;
+				case "partitioned":
+					attrObj.partitioned = true;
+					break;
+				default: attrObj[normalizedAttrName] = attrValue ? attrValue.trim() : true;
+			}
+		});
+		cookies.set(name, attrObj);
+	});
+	return cookies;
+}
+function toCookieOptions(attributes) {
+	return {
+		maxAge: attributes["max-age"],
+		expires: attributes.expires,
+		domain: attributes.domain,
+		path: attributes.path,
+		secure: attributes.secure,
+		httpOnly: attributes.httponly,
+		sameSite: attributes.samesite,
+		partitioned: attributes.partitioned
+	};
+}
+/**
+* Cookie-name token char set per RFC 7230 §3.2.6.
+*
+* @see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6
+*/
+var cookieNameRegex = /^[\x21\x23-\x27\x2A\x2B\x2D\x2E\x30-\x39\x41-\x5A\x5E\x5F\x60\x61-\x7A\x7C\x7E]+$/;
+/**
+* Cookie-value char set per RFC 6265 §4.1.1, plus space and comma.
+*
+* @see https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+* @see https://github.com/golang/go/issues/7243
+*/
+var cookieValueRegex = /^[\x20\x21\x23-\x3A\x3C-\x5B\x5D-\x7E]*$/;
+/**
+* Strip surrounding double-quotes per RFC 6265 §4.1.1 quoted-string form.
+*
+* @see https://datatracker.ietf.org/doc/html/rfc6265#section-4.1.1
+*/
+function unquoteCookieValue(value) {
+	if (value.length < 2 || !value.startsWith("\"") || !value.endsWith("\"")) return value;
+	return value.slice(1, -1);
+}
+/**
+* Trim leading/trailing OWS (space / horizontal tab) per RFC 7230 §3.2.3.
+* Narrower than `String.prototype.trim()`, which strips CR/LF and other
+* whitespace and would let CTLs escape `cookieValueRegex`.
+*
+* @see https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.3
+*/
+function trimOWS(s) {
+	let start = 0;
+	let end = s.length;
+	while (start < end) {
+		const c = s.charCodeAt(start);
+		if (c !== 32 && c !== 9) break;
+		start++;
+	}
+	while (end > start) {
+		const c = s.charCodeAt(end - 1);
+		if (c !== 32 && c !== 9) break;
+		end--;
+	}
+	return start === 0 && end === s.length ? s : s.slice(start, end);
+}
+/**
+* Tolerates `;` separators without the SP that RFC 6265 §4.2.1 mandates,
+* since proxies and runtimes commonly strip it. Silently drops entries
+* whose name violates RFC 7230 token or whose value violates RFC 6265
+* cookie-octet (plus space and comma). Strips optional surrounding
+* double-quotes per RFC 6265 §4.1.1.
+*/
+function parseCookies(cookie) {
+	const cookieMap = /* @__PURE__ */ new Map();
+	if (cookie.length < 2) return cookieMap;
+	for (const chunk of cookie.split(";")) {
+		const eq = chunk.indexOf("=");
+		if (eq === -1) continue;
+		const key = trimOWS(chunk.slice(0, eq));
+		const val = unquoteCookieValue(trimOWS(chunk.slice(eq + 1)));
+		if (cookieNameRegex.test(key) && cookieValueRegex.test(val)) cookieMap.set(key, tryDecode$1(val));
+	}
+	return cookieMap;
+}
+/**
+* Add or replace a cookie in the request `Cookie` header.
+*
+* Cookie pairs are joined with `; `, but `headers.append("cookie", ...)`
+* joins with `, ` in some runtimes (e.g. Deno, Cloudflare Workers) and
+* breaks downstream cookie parsing. This builds the header value via
+* parse-mutate-serialize.
+*/
+function setRequestCookie(headers, name, value) {
+	const cookieMap = parseCookies(headers.get("cookie") || "");
+	if (cookieNameRegex.test(name)) cookieMap.set(name, value);
+	headers.set("cookie", Array.from(cookieMap, ([k, v]) => `${k}=${encodeURIComponent(v)}`).join("; "));
 }
 /**
 * Per-cookie byte ceiling.
@@ -7856,6 +7847,7 @@ var createBetterAuth = (options, initFn) => {
 var betterAuth = (options) => {
 	return createBetterAuth(options, init);
 };
+var PACKAGE_VERSION = "1.6.30";
 var BEARER_SCHEME = "bearer ";
 function tryDecode(str) {
 	try {
@@ -7922,553 +7914,6 @@ var bearer = (options) => {
 		options
 	};
 };
-function isNonEmptyOAuthId$1(id) {
-	return id !== void 0 && id !== null && id !== "";
-}
-var signInWithOAuth2BodySchema = object({
-	providerId: string().meta({ description: "The provider ID for the OAuth provider" }),
-	callbackURL: string().meta({ description: "The URL to redirect to after sign in" }).optional(),
-	errorCallbackURL: string().meta({ description: "The URL to redirect to if an error occurs" }).optional(),
-	newUserCallbackURL: string().meta({ description: "The URL to redirect to after login if the user is new. Eg: \"/welcome\"" }).optional(),
-	disableRedirect: boolean().meta({ description: "Disable redirect" }).optional(),
-	scopes: array(string()).meta({ description: "Scopes to be passed to the provider authorization request." }).optional(),
-	requestSignUp: boolean().meta({ description: "Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider. Eg: false" }).optional(),
-	/**
-	* Any additional data to pass through the oauth flow.
-	*/
-	additionalData: record(string(), any()).optional()
-});
-/**
-* ### Endpoint
-*
-* POST `/sign-in/oauth2`
-*
-* ### API Methods
-*
-* **server:**
-* `auth.api.signInWithOAuth2`
-*
-* **client:**
-* `authClient.signIn.oauth2`
-*
-* @see [Read our docs to learn more.](https://better-auth.com/docs/plugins/sign-in#api-method-sign-in-oauth2)
-*/
-var signInWithOAuth2 = (options) => createAuthEndpoint("/sign-in/oauth2", {
-	method: "POST",
-	body: signInWithOAuth2BodySchema,
-	metadata: { openapi: {
-		description: "Sign in with OAuth2",
-		responses: { 200: {
-			description: "Sign in with OAuth2",
-			content: { "application/json": { schema: {
-				type: "object",
-				properties: {
-					url: { type: "string" },
-					redirect: { type: "boolean" }
-				}
-			} } }
-		} }
-	} }
-}, async (ctx) => {
-	const { providerId } = ctx.body;
-	const config = options.config.find((c) => c.providerId === providerId);
-	if (!config) throw APIError.fromStatus("BAD_REQUEST", { message: `${GENERIC_OAUTH_ERROR_CODES.PROVIDER_CONFIG_NOT_FOUND} ${providerId}` });
-	const { discoveryUrl, authorizationUrl, tokenUrl, clientId, clientSecret, scopes, redirectURI, responseType, pkce, prompt, accessType, authorizationUrlParams, responseMode } = config;
-	let finalAuthUrl = authorizationUrl;
-	let finalTokenUrl = tokenUrl;
-	if (discoveryUrl) {
-		const discovery = await betterFetch(discoveryUrl, {
-			method: "GET",
-			headers: config.discoveryHeaders,
-			onError(context) {
-				ctx.context.logger.error(context.error.message, context.error, { discoveryUrl });
-			}
-		});
-		if (discovery.data) {
-			finalAuthUrl = discovery.data.authorization_endpoint;
-			finalTokenUrl = discovery.data.token_endpoint;
-		}
-	}
-	if (!finalAuthUrl || !finalTokenUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.INVALID_OAUTH_CONFIGURATION);
-	if (authorizationUrlParams) {
-		const withAdditionalParams = new URL(finalAuthUrl);
-		for (const [paramName, paramValue] of Object.entries(authorizationUrlParams)) withAdditionalParams.searchParams.set(paramName, paramValue);
-		finalAuthUrl = withAdditionalParams.toString();
-	}
-	const additionalParams = typeof authorizationUrlParams === "function" ? authorizationUrlParams(ctx) : authorizationUrlParams;
-	const { state, codeVerifier } = await generateState(ctx, void 0, ctx.body.additionalData);
-	const authUrl = await createAuthorizationURL({
-		id: providerId,
-		options: {
-			clientId,
-			clientSecret,
-			redirectURI
-		},
-		authorizationEndpoint: finalAuthUrl,
-		state,
-		codeVerifier: pkce ? codeVerifier : void 0,
-		scopes: ctx.body.scopes ? [...ctx.body.scopes, ...scopes || []] : scopes || [],
-		redirectURI: `${ctx.context.baseURL}/oauth2/callback/${providerId}`,
-		prompt,
-		accessType,
-		responseType,
-		responseMode,
-		additionalParams
-	});
-	return ctx.json({
-		url: authUrl.toString(),
-		redirect: !ctx.body.disableRedirect
-	});
-});
-var OAuth2CallbackQuerySchema = object({
-	code: string().meta({ description: "The OAuth2 code" }).optional(),
-	error: string().meta({ description: "The error message, if any" }).optional(),
-	error_description: string().meta({ description: "The error description, if any" }).optional(),
-	state: string().meta({ description: "The state parameter from the OAuth2 request" }).optional(),
-	iss: string().meta({ description: "The issuer identifier" }).optional()
-});
-var oAuth2Callback = (options) => createAuthEndpoint("/oauth2/callback/:providerId", {
-	method: "GET",
-	query: OAuth2CallbackQuerySchema,
-	metadata: {
-		...HIDE_METADATA,
-		allowedMediaTypes: ["application/x-www-form-urlencoded", "application/json"],
-		openapi: {
-			description: "OAuth2 callback",
-			responses: { 200: {
-				description: "OAuth2 callback",
-				content: { "application/json": { schema: {
-					type: "object",
-					properties: { url: { type: "string" } }
-				} } }
-			} }
-		}
-	}
-}, async (ctx) => {
-	const defaultErrorURL = ctx.context.options.onAPIError?.errorURL || `${ctx.context.baseURL}/error`;
-	if (ctx.query.error || !ctx.query.code) redirectOnError(ctx, defaultErrorURL, ctx.query.error || "oAuth_code_missing", ctx.query.error_description || void 0);
-	const providerId = ctx.params?.providerId;
-	if (!providerId) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.PROVIDER_ID_REQUIRED);
-	const providerConfig = options.config.find((p) => p.providerId === providerId);
-	if (!providerConfig) throw APIError.fromStatus("BAD_REQUEST", { message: `${GENERIC_OAUTH_ERROR_CODES.PROVIDER_CONFIG_NOT_FOUND} ${providerId}` });
-	let tokens = void 0;
-	const { callbackURL, codeVerifier, errorURL, requestSignUp, newUserURL, link } = await parseState(ctx);
-	const code = ctx.query.code;
-	const resolvedErrorURL = errorURL || defaultErrorURL;
-	let finalTokenUrl = providerConfig.tokenUrl;
-	let finalUserInfoUrl = providerConfig.userInfoUrl;
-	let expectedIssuer = providerConfig.issuer;
-	if (providerConfig.discoveryUrl) {
-		const discovery = await betterFetch(providerConfig.discoveryUrl, {
-			method: "GET",
-			headers: providerConfig.discoveryHeaders
-		});
-		if (discovery.data) {
-			finalTokenUrl = discovery.data.token_endpoint;
-			finalUserInfoUrl = discovery.data.userinfo_endpoint;
-			if (!expectedIssuer && discovery.data.issuer) expectedIssuer = discovery.data.issuer;
-		}
-	}
-	if (expectedIssuer) {
-		if (ctx.query.iss) {
-			if (ctx.query.iss !== expectedIssuer) {
-				ctx.context.logger.error("OAuth issuer mismatch", {
-					expected: expectedIssuer,
-					received: ctx.query.iss
-				});
-				redirectOnError(ctx, resolvedErrorURL, "issuer_mismatch");
-			}
-		} else if (providerConfig.requireIssuerValidation) {
-			ctx.context.logger.error("OAuth issuer parameter missing", { expected: expectedIssuer });
-			redirectOnError(ctx, resolvedErrorURL, "issuer_missing");
-		}
-	}
-	try {
-		if (providerConfig.getToken) tokens = await providerConfig.getToken({
-			code,
-			redirectURI: `${ctx.context.baseURL}/oauth2/callback/${providerConfig.providerId}`,
-			codeVerifier: providerConfig.pkce ? codeVerifier : void 0
-		});
-		else {
-			if (!finalTokenUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.INVALID_OAUTH_CONFIG);
-			const additionalParams = typeof providerConfig.tokenUrlParams === "function" ? providerConfig.tokenUrlParams(ctx) : providerConfig.tokenUrlParams;
-			tokens = await validateAuthorizationCode({
-				headers: providerConfig.authorizationHeaders,
-				code,
-				codeVerifier: providerConfig.pkce ? codeVerifier : void 0,
-				redirectURI: `${ctx.context.baseURL}/oauth2/callback/${providerConfig.providerId}`,
-				options: {
-					clientId: providerConfig.clientId,
-					clientSecret: providerConfig.clientSecret,
-					redirectURI: providerConfig.redirectURI
-				},
-				tokenEndpoint: finalTokenUrl,
-				authentication: providerConfig.authentication,
-				additionalParams
-			});
-		}
-		tokens = applyDefaultAccessTokenExpiry(tokens, providerConfig.accessTokenExpiresIn);
-	} catch (e) {
-		ctx.context.logger.error(e && typeof e === "object" && "name" in e ? e.name : "", e);
-		redirectOnError(ctx, resolvedErrorURL, "oauth_code_verification_failed");
-	}
-	if (!tokens) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.INVALID_OAUTH_CONFIG);
-	const userInfo = await (async function handleUserInfo() {
-		const userInfo = providerConfig.getUserInfo ? await providerConfig.getUserInfo(tokens) : await getUserInfo(tokens, finalUserInfoUrl);
-		if (!userInfo) redirectOnError(ctx, resolvedErrorURL, "user_info_is_missing");
-		const mapUser = providerConfig.mapProfileToUser ? await providerConfig.mapProfileToUser(userInfo) : userInfo;
-		const email = mapUser.email ? mapUser.email.toLowerCase() : userInfo.email?.toLowerCase();
-		if (!email) {
-			ctx.context.logger.error(missingEmailLogMessage(providerConfig.providerId, { source: "generic" }), userInfo);
-			redirectOnError(ctx, resolvedErrorURL, "email_is_missing");
-		}
-		const rawId = isNonEmptyOAuthId$1(mapUser.id) ? mapUser.id : isNonEmptyOAuthId$1(userInfo.id) ? userInfo.id : isNonEmptyOAuthId$1(userInfo.sub) ? userInfo.sub : void 0;
-		const id = rawId !== void 0 ? String(rawId) : "";
-		if (!id) {
-			ctx.context.logger.error("Provider did not return an account id (e.g. `sub`). Unable to sign in.", userInfo);
-			redirectOnError(ctx, resolvedErrorURL, "id_is_missing");
-		}
-		const name = mapUser.name ? mapUser.name : userInfo.name;
-		if (!name) {
-			ctx.context.logger.error("Unable to get user info", userInfo);
-			redirectOnError(ctx, resolvedErrorURL, "name_is_missing");
-		}
-		return {
-			...userInfo,
-			...mapUser,
-			email,
-			id,
-			name
-		};
-	})();
-	if (link) {
-		if (ctx.context.options.account?.accountLinking?.allowDifferentEmails !== true && link.email.toLowerCase() !== userInfo.email.toLowerCase()) redirectOnError(ctx, resolvedErrorURL, "email_doesn't_match");
-		const existingAccount = await ctx.context.internalAdapter.findAccountByProviderId(String(userInfo.id), providerConfig.providerId);
-		if (existingAccount) {
-			if (existingAccount.userId !== link.userId) redirectOnError(ctx, resolvedErrorURL, "account_already_linked_to_different_user");
-			const updateData = Object.fromEntries(Object.entries({
-				accessToken: await setTokenUtil(tokens.accessToken, ctx.context),
-				idToken: tokens.idToken,
-				refreshToken: await setTokenUtil(tokens.refreshToken, ctx.context),
-				accessTokenExpiresAt: tokens.accessTokenExpiresAt,
-				refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
-				scope: tokens.scopes?.join(",")
-			}).filter(([_, value]) => value !== void 0));
-			await ctx.context.internalAdapter.updateAccount(existingAccount.id, updateData);
-		} else if (!await ctx.context.internalAdapter.createAccount({
-			userId: link.userId,
-			providerId: providerConfig.providerId,
-			accountId: userInfo.id,
-			accessToken: await setTokenUtil(tokens.accessToken, ctx.context),
-			accessTokenExpiresAt: tokens.accessTokenExpiresAt,
-			refreshTokenExpiresAt: tokens.refreshTokenExpiresAt,
-			scope: tokens.scopes?.join(","),
-			refreshToken: await setTokenUtil(tokens.refreshToken, ctx.context),
-			idToken: tokens.idToken
-		})) redirectOnError(ctx, resolvedErrorURL, "unable_to_link_account");
-		await applyUpdateUserInfoOnLink(ctx, link.userId, userInfo);
-		let toRedirectTo;
-		try {
-			toRedirectTo = callbackURL.toString();
-		} catch {
-			toRedirectTo = callbackURL;
-		}
-		throw ctx.redirect(toRedirectTo);
-	}
-	let result;
-	try {
-		result = await handleOAuthUserInfo(ctx, {
-			userInfo,
-			account: {
-				providerId: providerConfig.providerId,
-				accountId: userInfo.id,
-				...tokens,
-				scope: tokens.scopes?.join(",")
-			},
-			callbackURL,
-			disableSignUp: providerConfig.disableImplicitSignUp && !requestSignUp || providerConfig.disableSignUp,
-			overrideUserInfo: providerConfig.overrideUserInfo
-		});
-	} catch (e) {
-		if (isAPIError(e) && e.body?.code) redirectOnError(ctx, resolvedErrorURL, e.body.code, e.body.message);
-		throw e;
-	}
-	if (result.error) redirectOnError(ctx, resolvedErrorURL, result.error.split(" ").join("_"));
-	const { session, user } = result.data;
-	await setSessionCookie(ctx, {
-		session,
-		user
-	});
-	let toRedirectTo;
-	try {
-		toRedirectTo = (result.isRegister ? newUserURL || callbackURL : callbackURL).toString();
-	} catch {
-		toRedirectTo = result.isRegister ? newUserURL || callbackURL : callbackURL;
-	}
-	throw ctx.redirect(toRedirectTo);
-});
-var OAuth2LinkAccountBodySchema = object({
-	providerId: string(),
-	/**
-	* Callback URL to redirect to after the user has signed in.
-	*/
-	callbackURL: string(),
-	/**
-	* Additional scopes to request when linking the account.
-	* This is useful for requesting additional permissions when
-	* linking a social account compared to the initial authentication.
-	*/
-	scopes: array(string()).meta({ description: "Additional scopes to request when linking the account" }).optional(),
-	/**
-	* The URL to redirect to if there is an error during the link process.
-	*/
-	errorCallbackURL: string().meta({ description: "The URL to redirect to if there is an error during the link process" }).optional()
-});
-/**
-* ### Endpoint
-*
-* POST `/oauth2/link`
-*
-* ### API Methods
-*
-* **server:**
-* `auth.api.oAuth2LinkAccount`
-*
-* **client:**
-* `authClient.oauth2.link`
-*
-* @see [Read our docs to learn more.](https://better-auth.com/docs/plugins/generic-oauth#api-method-oauth2-link)
-*/
-var oAuth2LinkAccount = (options) => createAuthEndpoint("/oauth2/link", {
-	method: "POST",
-	body: OAuth2LinkAccountBodySchema,
-	use: [sessionMiddleware],
-	metadata: { openapi: {
-		description: "Link an OAuth2 account to the current user session",
-		responses: { "200": {
-			description: "Authorization URL generated successfully for linking an OAuth2 account",
-			content: { "application/json": { schema: {
-				type: "object",
-				properties: {
-					url: {
-						type: "string",
-						format: "uri",
-						description: "The authorization URL to redirect the user to for linking the OAuth2 account"
-					},
-					redirect: {
-						type: "boolean",
-						description: "Indicates that the client should redirect to the provided URL",
-						enum: [true]
-					}
-				},
-				required: ["url", "redirect"]
-			} } }
-		} }
-	} }
-}, async (c) => {
-	const session = c.context.session;
-	if (!session) throw APIError.from("UNAUTHORIZED", GENERIC_OAUTH_ERROR_CODES.SESSION_REQUIRED);
-	const provider = options.config.find((p) => p.providerId === c.body.providerId);
-	if (!provider) throw APIError.from("NOT_FOUND", BASE_ERROR_CODES.PROVIDER_NOT_FOUND);
-	const { providerId, clientId, clientSecret, redirectURI, authorizationUrl, discoveryUrl, pkce, scopes, prompt, accessType, authorizationUrlParams } = provider;
-	let finalAuthUrl = authorizationUrl;
-	if (!finalAuthUrl) {
-		if (!discoveryUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.INVALID_OAUTH_CONFIGURATION);
-		const discovery = await betterFetch(discoveryUrl, {
-			method: "GET",
-			headers: provider.discoveryHeaders,
-			onError(context) {
-				c.context.logger.error(context.error.message, context.error, { discoveryUrl });
-			}
-		});
-		if (discovery.data) finalAuthUrl = discovery.data.authorization_endpoint;
-	}
-	if (!finalAuthUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.INVALID_OAUTH_CONFIGURATION);
-	const state = await generateState(c, {
-		userId: session.user.id,
-		email: session.user.email
-	}, void 0);
-	const additionalParams = typeof authorizationUrlParams === "function" ? authorizationUrlParams(c) : authorizationUrlParams;
-	const url = await createAuthorizationURL({
-		id: providerId,
-		options: {
-			clientId,
-			clientSecret,
-			redirectURI: redirectURI || `${c.context.baseURL}/oauth2/callback/${providerId}`
-		},
-		authorizationEndpoint: finalAuthUrl,
-		state: state.state,
-		codeVerifier: pkce ? state.codeVerifier : void 0,
-		scopes: c.body.scopes || scopes || [],
-		redirectURI: redirectURI || `${c.context.baseURL}/oauth2/callback/${providerId}`,
-		prompt,
-		accessType,
-		additionalParams
-	});
-	return c.json({
-		url: url.toString(),
-		redirect: true
-	});
-});
-async function getUserInfo(tokens, finalUserInfoUrl) {
-	if (tokens.idToken) {
-		const decoded = decodeJwt(tokens.idToken);
-		if (decoded) {
-			if (decoded.sub && decoded.email) return {
-				id: decoded.sub,
-				emailVerified: decoded.email_verified,
-				image: decoded.picture,
-				...decoded
-			};
-		}
-	}
-	if (!finalUserInfoUrl) return null;
-	const profile = (await betterFetch(finalUserInfoUrl, {
-		method: "GET",
-		headers: { Authorization: `Bearer ${tokens.accessToken}` }
-	})).data;
-	if (!profile) return null;
-	const { id: profileId, ...profileFields } = profile;
-	const subjectId = isNonEmptyOAuthId$1(profileId) ? profileId : isNonEmptyOAuthId$1(profile.sub) ? profile.sub : void 0;
-	return {
-		...profileFields,
-		...subjectId !== void 0 ? { id: subjectId } : {},
-		email: profile?.email,
-		emailVerified: profile?.email_verified ?? false,
-		image: profile?.picture,
-		name: profile?.name
-	};
-}
-function isNonEmptyOAuthId(id) {
-	return id !== void 0 && id !== null && id !== "";
-}
-/**
-* A generic OAuth plugin that can be used to add OAuth support to any provider
-*/
-var genericOAuth = (options) => {
-	const seenIds = /* @__PURE__ */ new Set();
-	const nonUniqueIds = /* @__PURE__ */ new Set();
-	for (const config of options.config) {
-		const id = config.providerId;
-		if (seenIds.has(id)) nonUniqueIds.add(id);
-		seenIds.add(id);
-	}
-	if (nonUniqueIds.size > 0) console.warn(`Duplicate provider IDs found: ${Array.from(nonUniqueIds).join(", ")}`);
-	return {
-		id: "generic-oauth",
-		version: PACKAGE_VERSION,
-		init: (ctx) => {
-			return { context: { socialProviders: options.config.map((c) => {
-				let finalUserInfoUrl = c.userInfoUrl;
-				return {
-					id: c.providerId,
-					name: c.providerId,
-					async createAuthorizationURL(data) {
-						let finalAuthUrl = c.authorizationUrl;
-						if (!finalAuthUrl && c.discoveryUrl) {
-							const discovery = await betterFetch(c.discoveryUrl, {
-								method: "GET",
-								headers: c.discoveryHeaders
-							});
-							if (discovery.data) {
-								finalAuthUrl = discovery.data.authorization_endpoint;
-								finalUserInfoUrl = finalUserInfoUrl ?? discovery.data.userinfo_endpoint;
-							}
-						}
-						if (!finalAuthUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.INVALID_OAUTH_CONFIGURATION);
-						return createAuthorizationURL({
-							id: c.providerId,
-							options: {
-								clientId: c.clientId,
-								clientSecret: c.clientSecret,
-								redirectURI: c.redirectURI
-							},
-							authorizationEndpoint: finalAuthUrl,
-							state: data.state,
-							codeVerifier: c.pkce ? data.codeVerifier : void 0,
-							scopes: c.scopes || [],
-							redirectURI: `${ctx.baseURL}/oauth2/callback/${c.providerId}`
-						});
-					},
-					async validateAuthorizationCode(data) {
-						if (c.getToken) return applyDefaultAccessTokenExpiry(await c.getToken(data), c.accessTokenExpiresIn);
-						let finalTokenUrl = c.tokenUrl;
-						if (c.discoveryUrl) {
-							const discovery = await betterFetch(c.discoveryUrl, {
-								method: "GET",
-								headers: c.discoveryHeaders
-							});
-							if (discovery.data) {
-								finalTokenUrl = discovery.data.token_endpoint;
-								finalUserInfoUrl = discovery.data.userinfo_endpoint;
-							}
-						}
-						if (!finalTokenUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.TOKEN_URL_NOT_FOUND);
-						return applyDefaultAccessTokenExpiry(await validateAuthorizationCode({
-							headers: c.authorizationHeaders,
-							code: data.code,
-							codeVerifier: data.codeVerifier,
-							redirectURI: data.redirectURI,
-							options: {
-								clientId: c.clientId,
-								clientSecret: c.clientSecret,
-								redirectURI: c.redirectURI
-							},
-							tokenEndpoint: finalTokenUrl,
-							authentication: c.authentication
-						}), c.accessTokenExpiresIn);
-					},
-					async refreshAccessToken(refreshToken) {
-						let finalTokenUrl = c.tokenUrl;
-						if (c.discoveryUrl) {
-							const discovery = await betterFetch(c.discoveryUrl, {
-								method: "GET",
-								headers: c.discoveryHeaders
-							});
-							if (discovery.data) finalTokenUrl = discovery.data.token_endpoint;
-						}
-						if (!finalTokenUrl) throw APIError.from("BAD_REQUEST", GENERIC_OAUTH_ERROR_CODES.TOKEN_URL_NOT_FOUND);
-						return applyDefaultAccessTokenExpiry(await refreshAccessToken({
-							refreshToken,
-							options: {
-								clientId: c.clientId,
-								clientSecret: c.clientSecret
-							},
-							authentication: c.authentication,
-							tokenEndpoint: finalTokenUrl
-						}), c.accessTokenExpiresIn);
-					},
-					async getUserInfo(tokens) {
-						const userInfo = c.getUserInfo ? await c.getUserInfo(tokens) : await getUserInfo(tokens, finalUserInfoUrl);
-						if (!userInfo) return null;
-						const userMap = await c.mapProfileToUser?.(userInfo);
-						const rawId = isNonEmptyOAuthId(userMap?.id) ? userMap.id : isNonEmptyOAuthId(userInfo.id) ? userInfo.id : isNonEmptyOAuthId(userInfo.sub) ? userInfo.sub : void 0;
-						if (rawId === void 0) return null;
-						return {
-							user: {
-								email: userInfo?.email,
-								emailVerified: userInfo?.emailVerified,
-								image: userInfo?.image,
-								name: userInfo?.name,
-								...userMap,
-								id: String(rawId)
-							},
-							data: userInfo
-						};
-					},
-					options: { overrideUserInfoOnSignIn: c.overrideUserInfo }
-				};
-			}).concat(ctx.socialProviders) } };
-		},
-		endpoints: {
-			signInWithOAuth2: signInWithOAuth2(options),
-			oAuth2Callback: oAuth2Callback(options),
-			oAuth2LinkAccount: oAuth2LinkAccount(options)
-		},
-		options,
-		$ERROR_CODES: GENERIC_OAUTH_ERROR_CODES
-	};
-};
 /**
 * Warns when a cookie integration plugin is not effectively last.
 *
@@ -8521,7 +7966,7 @@ var tanstackStartCookies = () => {
 					const setCookies = returned?.get("set-cookie");
 					if (!setCookies) return;
 					const parsed = parseSetCookieHeader(setCookies);
-					const { setCookie } = await import("./ssr.mjs").then((n) => n.c).then((n) => n.t);
+					const { setCookie } = await import("./ssr.mjs").then((n) => n.s).then((n) => n.t);
 					parsed.forEach((value, key) => {
 						if (!key) return;
 						try {
@@ -8577,7 +8022,7 @@ async function emitSessionCookie(ctx, sessionTokenName, sessionToken) {
 		return null;
 	}
 	try {
-		const { setCookie } = await import("./ssr.mjs").then((n) => n.c).then((n) => n.t);
+		const { setCookie } = await import("./ssr.mjs").then((n) => n.s).then((n) => n.t);
 		setCookie(sessionTokenName, sessionValue, {
 			path: cookieOptions.path ?? "/",
 			httpOnly: cookieOptions.httpOnly ?? true,
@@ -8609,7 +8054,7 @@ async function expireSessionDataCookie(ctx, cookie) {
 	const path = cookie.attributes.path ?? "/";
 	const secure = cookie.attributes.secure ?? true;
 	try {
-		const { setCookie } = await import("./ssr.mjs").then((n) => n.c).then((n) => n.t);
+		const { setCookie } = await import("./ssr.mjs").then((n) => n.s).then((n) => n.t);
 		setCookie(cookie.name, "", {
 			path,
 			httpOnly: true,
@@ -8637,7 +8082,7 @@ async function writeGateMarkerCookie(ctx, clear) {
 	const maxAge = clear ? 0 : typeof sessionMaxAge === "number" ? sessionMaxAge : void 0;
 	const value = clear ? "" : "1";
 	try {
-		const { setCookie } = await import("./ssr.mjs").then((n) => n.c).then((n) => n.t);
+		const { setCookie } = await import("./ssr.mjs").then((n) => n.s).then((n) => n.t);
 		setCookie(GATE_SESSION_MARKER_COOKIE, value, {
 			path: "/",
 			httpOnly: false,
@@ -8923,12 +8368,8 @@ var env$1 = (key) => {
 	const value = process.env[key]?.trim();
 	return value ? value : void 0;
 };
-var authDisabled = env$1("VITE_AUTH_ENABLED") === "false";
-var grokIssuer = env$1("GROK_AUTH_ISSUER") ?? "https://auth.grok.me";
-var grokClientId = env$1("GROK_AUTH_CLIENT_ID") ?? "grok_preview";
-var grokClientSecret = env$1("GROK_AUTH_CLIENT_SECRET") ?? "8bcdb7fc5a33874ad933ca568918d5790388a0795e44c4d1dea691f801b17ec5";
-/** True when federated sign-in is active (real auth is enforced). */
-var authConfigured = !authDisabled && Boolean(grokClientId && grokClientSecret);
+/** True when sign-in is active (real auth is enforced). */
+var authConfigured = !(env$1("VITE_AUTH_ENABLED") === "false");
 var explicitBaseURL = env$1("BETTER_AUTH_URL");
 var previewAllowedHosts = [...PREVIEW_ALLOWED_HOSTS];
 var LOCAL_DEV_ORIGINS = [
@@ -8952,10 +8393,6 @@ var trustedOrigins = explicitBaseURL ? [...siblingDeployedOrigins(explicitBaseUR
 	...LOCAL_DEV_ORIGINS
 ];
 var databaseUrl = env$1("DATABASE_URL");
-var issuerBase = grokIssuer.replace(/\/+$/, "");
-var grokAuthorizationUrl = `${issuerBase}/api/auth/oauth2/authorize`;
-var grokTokenUrl = `${issuerBase}/api/auth/oauth2/token`;
-var grokUserInfoUrl = `${issuerBase}/api/auth/oauth2/userinfo`;
 var database = databaseUrl ? new Pool({ connectionString: databaseUrl }) : {
 	dialect: pgliteDialect(() => getPglite()),
 	type: "postgres"
@@ -8966,23 +8403,6 @@ var googleClientId = env$1("GOOGLE_CLIENT_ID");
 var googleClientSecret = env$1("GOOGLE_CLIENT_SECRET");
 var googleDirectEnabled = Boolean(googleClientId && googleClientSecret);
 var googleRedirectUri = explicitBaseURL ? `${explicitBaseURL.replace(/\/+$/, "")}/api/auth/callback/google` : void 0;
-var grokOAuthPlugin = authConfigured ? genericOAuth({ config: GROK_PROVIDERS.map(({ providerId, idp }) => ({
-	providerId,
-	clientId: grokClientId,
-	clientSecret: grokClientSecret,
-	authorizationUrl: grokAuthorizationUrl,
-	tokenUrl: grokTokenUrl,
-	userInfoUrl: grokUserInfoUrl,
-	scopes: [
-		"openid",
-		"profile",
-		"email"
-	],
-	authorizationUrlParams: {
-		idp,
-		prompt: "login"
-	}
-})) }) : null;
 var auth = betterAuth({
 	baseURL,
 	secret: env$1("BETTER_AUTH_SECRET") ?? previewAuthSecret(),
@@ -8997,7 +8417,7 @@ var auth = betterAuth({
 		encryptOAuthTokens: true,
 		accountLinking: {
 			enabled: true,
-			trustedProviders: [...GROK_PROVIDERS.map((p) => p.providerId), GATE_PROVIDER_ID],
+			trustedProviders: ["google", GATE_PROVIDER_ID],
 			requireLocalEmailVerified: false
 		}
 	},
@@ -9021,10 +8441,9 @@ var auth = betterAuth({
 	},
 	plugins: [
 		gateIdentitySessions(),
-		...grokOAuthPlugin ? [grokOAuthPlugin] : [],
 		bearer(),
 		tanstackStartCookies()
 	]
 });
 //#endregion
-export { gateIdentityEnabled as i, auth as n, authConfigured as r, GROK_PROVIDERS as t };
+export { authConfigured as n, gateIdentityEnabled as r, auth as t };

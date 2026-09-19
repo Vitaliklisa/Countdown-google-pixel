@@ -1,226 +1,4 @@
 import { t as __commonJSMin } from "../../_runtime.mjs";
-//#region node_modules/@better-auth/core/dist/utils/error-codes.mjs
-function defineErrorCodes(codes) {
-	return Object.fromEntries(Object.entries(codes).map(([key, value]) => [key, {
-		code: key,
-		message: value,
-		toString: () => key
-	}]));
-}
-//#endregion
-//#region node_modules/@better-auth/core/dist/error/codes.mjs
-var BASE_ERROR_CODES = defineErrorCodes({
-	USER_NOT_FOUND: "User not found",
-	FAILED_TO_CREATE_USER: "Failed to create user",
-	FAILED_TO_CREATE_SESSION: "Failed to create session",
-	FAILED_TO_UPDATE_USER: "Failed to update user",
-	FAILED_TO_GET_SESSION: "Failed to get session",
-	INVALID_PASSWORD: "Invalid password",
-	INVALID_EMAIL: "Invalid email",
-	INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
-	INVALID_USER: "Invalid user",
-	SOCIAL_ACCOUNT_ALREADY_LINKED: "Social account already linked",
-	PROVIDER_NOT_FOUND: "Provider not found",
-	INVALID_TOKEN: "Invalid token",
-	TOKEN_EXPIRED: "Token expired",
-	ID_TOKEN_NOT_SUPPORTED: "id_token not supported",
-	FAILED_TO_GET_USER_INFO: "Failed to get user info",
-	USER_EMAIL_NOT_FOUND: "User email not found",
-	EMAIL_NOT_VERIFIED: "Email not verified",
-	PASSWORD_TOO_SHORT: "Password too short",
-	PASSWORD_TOO_LONG: "Password too long",
-	USER_ALREADY_EXISTS: "User already exists.",
-	USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: "User already exists. Use another email.",
-	EMAIL_CAN_NOT_BE_UPDATED: "Email can not be updated",
-	CHANGE_EMAIL_DISABLED: "Change email is disabled",
-	CREDENTIAL_ACCOUNT_NOT_FOUND: "Credential account not found",
-	SESSION_EXPIRED: "Session expired. Re-authenticate to perform this action.",
-	FAILED_TO_UNLINK_LAST_ACCOUNT: "You can't unlink your last account",
-	ACCOUNT_NOT_FOUND: "Account not found",
-	USER_ALREADY_HAS_PASSWORD: "User already has a password. Provide that to delete the account.",
-	CROSS_SITE_NAVIGATION_LOGIN_BLOCKED: "Cross-site navigation login blocked. This request appears to be a CSRF attack.",
-	VERIFICATION_EMAIL_NOT_ENABLED: "Verification email isn't enabled",
-	EMAIL_ALREADY_VERIFIED: "Email is already verified",
-	EMAIL_MISMATCH: "Email mismatch",
-	SESSION_NOT_FRESH: "Session is not fresh",
-	LINKED_ACCOUNT_ALREADY_EXISTS: "Linked account already exists",
-	INVALID_ORIGIN: "Invalid origin",
-	INVALID_CALLBACK_URL: "Invalid callbackURL",
-	INVALID_REDIRECT_URL: "Invalid redirectURL",
-	INVALID_ERROR_CALLBACK_URL: "Invalid errorCallbackURL",
-	INVALID_NEW_USER_CALLBACK_URL: "Invalid newUserCallbackURL",
-	MISSING_OR_NULL_ORIGIN: "Missing or null Origin",
-	CALLBACK_URL_REQUIRED: "callbackURL is required",
-	FAILED_TO_CREATE_VERIFICATION: "Unable to create verification",
-	FIELD_NOT_ALLOWED: "Field not allowed to be set",
-	ASYNC_VALIDATION_NOT_SUPPORTED: "Async validation is not supported",
-	VALIDATION_ERROR: "Validation Error",
-	MISSING_FIELD: "Field is required",
-	METHOD_NOT_ALLOWED_DEFER_SESSION_REQUIRED: "POST method requires deferSessionRefresh to be enabled in session config",
-	BODY_MUST_BE_AN_OBJECT: "Body must be an object",
-	PASSWORD_ALREADY_SET: "User already has a password set"
-});
-//#endregion
-//#region node_modules/better-call/dist/error.mjs
-function isErrorStackTraceLimitWritable() {
-	const desc = Object.getOwnPropertyDescriptor(Error, "stackTraceLimit");
-	if (desc === void 0) return Object.isExtensible(Error);
-	return Object.prototype.hasOwnProperty.call(desc, "writable") ? desc.writable : desc.set !== void 0;
-}
-/**
-* Hide internal stack frames from the error stack trace.
-*/
-function hideInternalStackFrames(stack) {
-	const lines = stack.split("\n    at ");
-	if (lines.length <= 1) return stack;
-	lines.splice(1, 1);
-	return lines.join("\n    at ");
-}
-/**
-* Creates a custom error class that hides stack frames.
-*/
-function makeErrorForHideStackFrame(Base, clazz) {
-	class HideStackFramesError extends Base {
-		#hiddenStack;
-		constructor(...args) {
-			if (isErrorStackTraceLimitWritable()) {
-				const limit = Error.stackTraceLimit;
-				Error.stackTraceLimit = 0;
-				super(...args);
-				Error.stackTraceLimit = limit;
-			} else super(...args);
-			const stack = (/* @__PURE__ */ new Error()).stack;
-			if (stack) this.#hiddenStack = hideInternalStackFrames(stack.replace(/^Error/, this.name));
-		}
-		get errorStack() {
-			return this.#hiddenStack;
-		}
-	}
-	Object.defineProperty(HideStackFramesError.prototype, "constructor", {
-		get() {
-			return clazz;
-		},
-		enumerable: false,
-		configurable: true
-	});
-	return HideStackFramesError;
-}
-var statusCodes = {
-	OK: 200,
-	CREATED: 201,
-	ACCEPTED: 202,
-	NO_CONTENT: 204,
-	MULTIPLE_CHOICES: 300,
-	MOVED_PERMANENTLY: 301,
-	FOUND: 302,
-	SEE_OTHER: 303,
-	NOT_MODIFIED: 304,
-	TEMPORARY_REDIRECT: 307,
-	BAD_REQUEST: 400,
-	UNAUTHORIZED: 401,
-	PAYMENT_REQUIRED: 402,
-	FORBIDDEN: 403,
-	NOT_FOUND: 404,
-	METHOD_NOT_ALLOWED: 405,
-	NOT_ACCEPTABLE: 406,
-	PROXY_AUTHENTICATION_REQUIRED: 407,
-	REQUEST_TIMEOUT: 408,
-	CONFLICT: 409,
-	GONE: 410,
-	LENGTH_REQUIRED: 411,
-	PRECONDITION_FAILED: 412,
-	PAYLOAD_TOO_LARGE: 413,
-	URI_TOO_LONG: 414,
-	UNSUPPORTED_MEDIA_TYPE: 415,
-	RANGE_NOT_SATISFIABLE: 416,
-	EXPECTATION_FAILED: 417,
-	"I'M_A_TEAPOT": 418,
-	MISDIRECTED_REQUEST: 421,
-	UNPROCESSABLE_ENTITY: 422,
-	LOCKED: 423,
-	FAILED_DEPENDENCY: 424,
-	TOO_EARLY: 425,
-	UPGRADE_REQUIRED: 426,
-	PRECONDITION_REQUIRED: 428,
-	TOO_MANY_REQUESTS: 429,
-	REQUEST_HEADER_FIELDS_TOO_LARGE: 431,
-	UNAVAILABLE_FOR_LEGAL_REASONS: 451,
-	INTERNAL_SERVER_ERROR: 500,
-	NOT_IMPLEMENTED: 501,
-	BAD_GATEWAY: 502,
-	SERVICE_UNAVAILABLE: 503,
-	GATEWAY_TIMEOUT: 504,
-	HTTP_VERSION_NOT_SUPPORTED: 505,
-	VARIANT_ALSO_NEGOTIATES: 506,
-	INSUFFICIENT_STORAGE: 507,
-	LOOP_DETECTED: 508,
-	NOT_EXTENDED: 510,
-	NETWORK_AUTHENTICATION_REQUIRED: 511
-};
-var InternalAPIError = class extends Error {
-	status;
-	body;
-	headers;
-	statusCode;
-	constructor(status = "INTERNAL_SERVER_ERROR", body = void 0, headers = {}, statusCode = typeof status === "number" ? status : statusCodes[status]) {
-		super(body?.message, body?.cause ? { cause: body.cause } : void 0);
-		this.status = status;
-		this.body = body;
-		this.headers = headers;
-		this.statusCode = statusCode;
-		this.name = "APIError";
-		this.status = status;
-		this.headers = headers;
-		this.statusCode = statusCode;
-		this.body = body;
-	}
-};
-var ValidationError$1 = class extends InternalAPIError {
-	message;
-	issues;
-	constructor(message, issues) {
-		super(400, {
-			message,
-			code: "VALIDATION_ERROR"
-		});
-		this.message = message;
-		this.issues = issues;
-		this.issues = issues;
-	}
-};
-var BetterCallError = class extends Error {
-	constructor(message) {
-		super(message);
-		this.name = "BetterCallError";
-	}
-};
-var kAPIErrorHeaderSymbol = Symbol.for("better-call:api-error-headers");
-var APIError$1 = makeErrorForHideStackFrame(InternalAPIError, Error);
-//#endregion
-//#region node_modules/@better-auth/core/dist/error/index.mjs
-var BetterAuthError = class extends Error {
-	constructor(message, options) {
-		super(message, options);
-		this.name = "BetterAuthError";
-		this.message = message;
-		this.stack = "";
-	}
-};
-var APIError = class APIError extends APIError$1 {
-	constructor(...args) {
-		super(...args);
-	}
-	static fromStatus(status, body) {
-		return new APIError(status, body);
-	}
-	static from(status, error) {
-		return new APIError(status, {
-			message: error.message,
-			code: error.code
-		});
-	}
-};
-//#endregion
 //#region node_modules/@better-auth/core/dist/env/env-impl.mjs
 var _envShim = Object.create(null);
 var _getEnv = (useShim) => globalThis.process?.env || globalThis.Deno?.env.toObject() || globalThis.__env__ || (useShim ? _envShim : globalThis);
@@ -461,6 +239,228 @@ var createLogger = (options) => {
 	};
 };
 var logger = createLogger();
+//#endregion
+//#region node_modules/@better-auth/core/dist/utils/error-codes.mjs
+function defineErrorCodes(codes) {
+	return Object.fromEntries(Object.entries(codes).map(([key, value]) => [key, {
+		code: key,
+		message: value,
+		toString: () => key
+	}]));
+}
+//#endregion
+//#region node_modules/@better-auth/core/dist/error/codes.mjs
+var BASE_ERROR_CODES = defineErrorCodes({
+	USER_NOT_FOUND: "User not found",
+	FAILED_TO_CREATE_USER: "Failed to create user",
+	FAILED_TO_CREATE_SESSION: "Failed to create session",
+	FAILED_TO_UPDATE_USER: "Failed to update user",
+	FAILED_TO_GET_SESSION: "Failed to get session",
+	INVALID_PASSWORD: "Invalid password",
+	INVALID_EMAIL: "Invalid email",
+	INVALID_EMAIL_OR_PASSWORD: "Invalid email or password",
+	INVALID_USER: "Invalid user",
+	SOCIAL_ACCOUNT_ALREADY_LINKED: "Social account already linked",
+	PROVIDER_NOT_FOUND: "Provider not found",
+	INVALID_TOKEN: "Invalid token",
+	TOKEN_EXPIRED: "Token expired",
+	ID_TOKEN_NOT_SUPPORTED: "id_token not supported",
+	FAILED_TO_GET_USER_INFO: "Failed to get user info",
+	USER_EMAIL_NOT_FOUND: "User email not found",
+	EMAIL_NOT_VERIFIED: "Email not verified",
+	PASSWORD_TOO_SHORT: "Password too short",
+	PASSWORD_TOO_LONG: "Password too long",
+	USER_ALREADY_EXISTS: "User already exists.",
+	USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL: "User already exists. Use another email.",
+	EMAIL_CAN_NOT_BE_UPDATED: "Email can not be updated",
+	CHANGE_EMAIL_DISABLED: "Change email is disabled",
+	CREDENTIAL_ACCOUNT_NOT_FOUND: "Credential account not found",
+	SESSION_EXPIRED: "Session expired. Re-authenticate to perform this action.",
+	FAILED_TO_UNLINK_LAST_ACCOUNT: "You can't unlink your last account",
+	ACCOUNT_NOT_FOUND: "Account not found",
+	USER_ALREADY_HAS_PASSWORD: "User already has a password. Provide that to delete the account.",
+	CROSS_SITE_NAVIGATION_LOGIN_BLOCKED: "Cross-site navigation login blocked. This request appears to be a CSRF attack.",
+	VERIFICATION_EMAIL_NOT_ENABLED: "Verification email isn't enabled",
+	EMAIL_ALREADY_VERIFIED: "Email is already verified",
+	EMAIL_MISMATCH: "Email mismatch",
+	SESSION_NOT_FRESH: "Session is not fresh",
+	LINKED_ACCOUNT_ALREADY_EXISTS: "Linked account already exists",
+	INVALID_ORIGIN: "Invalid origin",
+	INVALID_CALLBACK_URL: "Invalid callbackURL",
+	INVALID_REDIRECT_URL: "Invalid redirectURL",
+	INVALID_ERROR_CALLBACK_URL: "Invalid errorCallbackURL",
+	INVALID_NEW_USER_CALLBACK_URL: "Invalid newUserCallbackURL",
+	MISSING_OR_NULL_ORIGIN: "Missing or null Origin",
+	CALLBACK_URL_REQUIRED: "callbackURL is required",
+	FAILED_TO_CREATE_VERIFICATION: "Unable to create verification",
+	FIELD_NOT_ALLOWED: "Field not allowed to be set",
+	ASYNC_VALIDATION_NOT_SUPPORTED: "Async validation is not supported",
+	VALIDATION_ERROR: "Validation Error",
+	MISSING_FIELD: "Field is required",
+	METHOD_NOT_ALLOWED_DEFER_SESSION_REQUIRED: "POST method requires deferSessionRefresh to be enabled in session config",
+	BODY_MUST_BE_AN_OBJECT: "Body must be an object",
+	PASSWORD_ALREADY_SET: "User already has a password set"
+});
+//#endregion
+//#region node_modules/better-call/dist/error.mjs
+function isErrorStackTraceLimitWritable() {
+	const desc = Object.getOwnPropertyDescriptor(Error, "stackTraceLimit");
+	if (desc === void 0) return Object.isExtensible(Error);
+	return Object.prototype.hasOwnProperty.call(desc, "writable") ? desc.writable : desc.set !== void 0;
+}
+/**
+* Hide internal stack frames from the error stack trace.
+*/
+function hideInternalStackFrames(stack) {
+	const lines = stack.split("\n    at ");
+	if (lines.length <= 1) return stack;
+	lines.splice(1, 1);
+	return lines.join("\n    at ");
+}
+/**
+* Creates a custom error class that hides stack frames.
+*/
+function makeErrorForHideStackFrame(Base, clazz) {
+	class HideStackFramesError extends Base {
+		#hiddenStack;
+		constructor(...args) {
+			if (isErrorStackTraceLimitWritable()) {
+				const limit = Error.stackTraceLimit;
+				Error.stackTraceLimit = 0;
+				super(...args);
+				Error.stackTraceLimit = limit;
+			} else super(...args);
+			const stack = (/* @__PURE__ */ new Error()).stack;
+			if (stack) this.#hiddenStack = hideInternalStackFrames(stack.replace(/^Error/, this.name));
+		}
+		get errorStack() {
+			return this.#hiddenStack;
+		}
+	}
+	Object.defineProperty(HideStackFramesError.prototype, "constructor", {
+		get() {
+			return clazz;
+		},
+		enumerable: false,
+		configurable: true
+	});
+	return HideStackFramesError;
+}
+var statusCodes = {
+	OK: 200,
+	CREATED: 201,
+	ACCEPTED: 202,
+	NO_CONTENT: 204,
+	MULTIPLE_CHOICES: 300,
+	MOVED_PERMANENTLY: 301,
+	FOUND: 302,
+	SEE_OTHER: 303,
+	NOT_MODIFIED: 304,
+	TEMPORARY_REDIRECT: 307,
+	BAD_REQUEST: 400,
+	UNAUTHORIZED: 401,
+	PAYMENT_REQUIRED: 402,
+	FORBIDDEN: 403,
+	NOT_FOUND: 404,
+	METHOD_NOT_ALLOWED: 405,
+	NOT_ACCEPTABLE: 406,
+	PROXY_AUTHENTICATION_REQUIRED: 407,
+	REQUEST_TIMEOUT: 408,
+	CONFLICT: 409,
+	GONE: 410,
+	LENGTH_REQUIRED: 411,
+	PRECONDITION_FAILED: 412,
+	PAYLOAD_TOO_LARGE: 413,
+	URI_TOO_LONG: 414,
+	UNSUPPORTED_MEDIA_TYPE: 415,
+	RANGE_NOT_SATISFIABLE: 416,
+	EXPECTATION_FAILED: 417,
+	"I'M_A_TEAPOT": 418,
+	MISDIRECTED_REQUEST: 421,
+	UNPROCESSABLE_ENTITY: 422,
+	LOCKED: 423,
+	FAILED_DEPENDENCY: 424,
+	TOO_EARLY: 425,
+	UPGRADE_REQUIRED: 426,
+	PRECONDITION_REQUIRED: 428,
+	TOO_MANY_REQUESTS: 429,
+	REQUEST_HEADER_FIELDS_TOO_LARGE: 431,
+	UNAVAILABLE_FOR_LEGAL_REASONS: 451,
+	INTERNAL_SERVER_ERROR: 500,
+	NOT_IMPLEMENTED: 501,
+	BAD_GATEWAY: 502,
+	SERVICE_UNAVAILABLE: 503,
+	GATEWAY_TIMEOUT: 504,
+	HTTP_VERSION_NOT_SUPPORTED: 505,
+	VARIANT_ALSO_NEGOTIATES: 506,
+	INSUFFICIENT_STORAGE: 507,
+	LOOP_DETECTED: 508,
+	NOT_EXTENDED: 510,
+	NETWORK_AUTHENTICATION_REQUIRED: 511
+};
+var InternalAPIError = class extends Error {
+	status;
+	body;
+	headers;
+	statusCode;
+	constructor(status = "INTERNAL_SERVER_ERROR", body = void 0, headers = {}, statusCode = typeof status === "number" ? status : statusCodes[status]) {
+		super(body?.message, body?.cause ? { cause: body.cause } : void 0);
+		this.status = status;
+		this.body = body;
+		this.headers = headers;
+		this.statusCode = statusCode;
+		this.name = "APIError";
+		this.status = status;
+		this.headers = headers;
+		this.statusCode = statusCode;
+		this.body = body;
+	}
+};
+var ValidationError$1 = class extends InternalAPIError {
+	message;
+	issues;
+	constructor(message, issues) {
+		super(400, {
+			message,
+			code: "VALIDATION_ERROR"
+		});
+		this.message = message;
+		this.issues = issues;
+		this.issues = issues;
+	}
+};
+var BetterCallError = class extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "BetterCallError";
+	}
+};
+var kAPIErrorHeaderSymbol = Symbol.for("better-call:api-error-headers");
+var APIError$1 = makeErrorForHideStackFrame(InternalAPIError, Error);
+//#endregion
+//#region node_modules/@better-auth/core/dist/error/index.mjs
+var BetterAuthError = class extends Error {
+	constructor(message, options) {
+		super(message, options);
+		this.name = "BetterAuthError";
+		this.message = message;
+		this.stack = "";
+	}
+};
+var APIError = class APIError extends APIError$1 {
+	constructor(...args) {
+		super(...args);
+	}
+	static fromStatus(status, body) {
+		return new APIError(status, body);
+	}
+	static from(status, error) {
+		return new APIError(status, {
+			message: error.message,
+			code: error.code
+		});
+	}
+};
 //#endregion
 //#region node_modules/@better-auth/core/dist/utils/url.mjs
 /**
@@ -16880,17 +16880,6 @@ function getOAuth2Tokens(data) {
 	};
 }
 /**
-* Fill in `accessTokenExpiresAt` from the provider's configured
-* `accessTokenExpiresIn` when the token response omitted `expires_in`. Without a
-* known expiry, `getAccessToken` cannot tell the token is expired and never
-* refreshes it. No-op when the provider already supplied an expiry or no
-* fallback is configured.
-*/
-function applyDefaultAccessTokenExpiry(tokens, accessTokenExpiresIn) {
-	if (!tokens.accessTokenExpiresAt && accessTokenExpiresIn) tokens.accessTokenExpiresAt = new Date(Date.now() + accessTokenExpiresIn * 1e3);
-	return tokens;
-}
-/**
 * Return the provider's primary Client ID: the single string, or the entry at
 * array index 0 for the cross-platform form used by ID token audience
 * verification. Index 0 is the designated primary and pairs with
@@ -20046,4 +20035,4 @@ var socialProviders = {
 };
 var SocialProviderListEnum = _enum(Object.keys(socialProviders)).or(string());
 //#endregion
-export { encode as $, union as $t, jwtVerify as A, getCurrentAdapter as At, jweAlgorithm as B, ZodString as Bt, serializeSignedCookie as C, withSpan as Ct, decodeJwt as D, import_src as Dt, base64Url as E, ATTR_OPERATION_ID as Et, JWE_RECOGNIZED as F, initGetModelName as Ft, decodeBase64url as G, email as Gt, prepareKey as H, any as Ht, JWS_RECOGNIZED as I, initGetFieldName as It, parseJoseHeader as J, number as Jt, digest as K, literal as Kt, validateAlgorithms as L, generateId as Lt, validateClaimsSet as M, runWithAdapter as Mt, jwsAlgorithm as N, runWithTransaction as Nt, decodeProtectedHeader as O, safeJSONParse as Ot, sign as P, getBetterAuthVersion as Pt, isObject as Q, string as Qt, validateCrit as R, createRandomStringGenerator as Rt, serializeCookie as S, defineErrorCodes as Sn, createAdapterFactory as St, base64 as T, ATTR_HOOK_TYPE as Tt, jwkToKey as U, array as Ut, jweEncryption as V, _enum as Vt, assertNotSet as W, boolean as Wt, isDisjoint as X, optional as Xt, unprotected as Y, object as Yt, isJWK as Z, record as Zt, runWithRequestState as _, isTest as _n, concat as _t, createAuthorizationURL as a, createFetch as an, JOSENotSupported as at, createRouter$1 as b, kAPIErrorHeaderSymbol as bn, uint32be as bt, createRateLimitKey as c, createLogger as cn, JWKInvalid as ct, deprecate as d, ENV as dn, JWTExpired as dt, _coercedBoolean as en, assertCryptoKey as et, createAuthEndpoint as f, env as fn, JWTInvalid as ft, hasRequestState as g, isProduction as gn, checkUsage as gt, defineRequestState as h, isDevelopment as hn, checkModulusLength as ht, refreshAccessToken as i, betterFetch as in, JOSEAlgNotAllowed as it, JWTClaimsBuilder as j, queueAfterTransactionHook as jt, importJWK as k, getAuthTables as kt, findInvalidTrustedProxies as l, logger as ln, JWSInvalid as lt, isAPIError as m, getEnvVar as mn, checkCryptoKey as mt, socialProviders as n, capitalizeFirstLetter as nn, isKeyLike as nt, applyDefaultAccessTokenExpiry as o, isSafeUrlScheme as on, JWEDecryptionFailed as ot, createAuthMiddleware as p, getBooleanEnvVar as pn, invalidKeyInput as pt, encodeBase64url as q, looseObject as qt, validateAuthorizationCode as r, toKebabCase as rn, isKeyObject as rt, isLoopbackHost as s, normalizePathname as sn, JWEInvalid as st, SocialProviderListEnum as t, _coercedString as tn, isCryptoKey as tt, getIp as u, shouldPublishLog as un, JWTClaimValidationFailed as ut, getCurrentAuthContext as v, APIError as vn, decoder as vt, filterOutputFields as w, ATTR_CONTEXT as wt, toResponse as x, BASE_ERROR_CODES as xn, uint64be as xt, runWithEndpointContext as y, BetterAuthError as yn, encode$1 as yt, validateCritDuplicates as z, ZodBoolean as zt };
+export { JOSEAlgNotAllowed as $, betterFetch as $t, JWE_RECOGNIZED as A, initGetModelName as At, decodeBase64url as B, email as Bt, decodeProtectedHeader as C, safeJSONParse as Ct, validateClaimsSet as D, runWithAdapter as Dt, JWTClaimsBuilder as E, queueAfterTransactionHook as Et, jweAlgorithm as F, ZodString as Ft, isDisjoint as G, optional as Gt, encodeBase64url as H, looseObject as Ht, jweEncryption as I, _enum as It, encode as J, union as Jt, isJWK as K, record as Kt, prepareKey as L, any as Lt, validateAlgorithms as M, generateId as Mt, validateCrit as N, createRandomStringGenerator as Nt, jwsAlgorithm as O, runWithTransaction as Ot, validateCritDuplicates as P, ZodBoolean as Pt, isKeyObject as Q, toKebabCase as Qt, jwkToKey as R, array as Rt, base64Url as S, import_src as St, jwtVerify as T, getCurrentAdapter as Tt, parseJoseHeader as U, number as Ut, digest as V, literal as Vt, unprotected as W, object as Wt, isCryptoKey as X, _coercedString as Xt, assertCryptoKey as Y, _coercedBoolean as Yt, isKeyLike as Z, capitalizeFirstLetter as Zt, toResponse as _, createAdapterFactory as _t, findInvalidTrustedProxies as a, kAPIErrorHeaderSymbol as an, JWTClaimValidationFailed as at, filterOutputFields as b, ATTR_HOOK_TYPE as bt, createAuthEndpoint as c, logger as cn, invalidKeyInput as ct, defineRequestState as d, env as dn, checkUsage as dt, createFetch as en, JOSENotSupported as et, hasRequestState as f, getBooleanEnvVar as fn, concat as ft, createRouter$1 as g, isTest as gn, uint64be as gt, runWithEndpointContext as h, isProduction as hn, uint32be as ht, createRateLimitKey as i, BetterAuthError as in, JWSInvalid as it, JWS_RECOGNIZED as j, initGetFieldName as jt, sign as k, getBetterAuthVersion as kt, createAuthMiddleware as l, shouldPublishLog as ln, checkCryptoKey as lt, getCurrentAuthContext as m, isDevelopment as mn, encode$1 as mt, socialProviders as n, normalizePathname as nn, JWEInvalid as nt, getIp as o, BASE_ERROR_CODES as on, JWTExpired as ot, runWithRequestState as p, getEnvVar as pn, decoder as pt, isObject as q, string as qt, isLoopbackHost as r, APIError as rn, JWKInvalid as rt, deprecate as s, createLogger as sn, JWTInvalid as st, SocialProviderListEnum as t, isSafeUrlScheme as tn, JWEDecryptionFailed as tt, isAPIError as u, ENV as un, checkModulusLength as ut, serializeCookie as v, withSpan as vt, importJWK as w, getAuthTables as wt, base64 as x, ATTR_OPERATION_ID as xt, serializeSignedCookie as y, ATTR_CONTEXT as yt, assertNotSet as z, boolean as zt };

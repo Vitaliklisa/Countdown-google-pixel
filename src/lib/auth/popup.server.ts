@@ -51,20 +51,16 @@ export async function handleAuthPopupRequest(request: Request): Promise<Response
     });
   }
 
-  const providerId = url.searchParams.get("providerId")?.trim();
-  if (!providerId) {
-    return new Response("Missing providerId", {
-      status: 400,
-      headers: { "content-type": "text/plain; charset=utf-8" },
-    });
-  }
-
   // Stay first-party for the callback so the session cookie lands in THIS popup.
   const back = `${url.origin}/auth/popup?done=1`;
   try {
-    const apiRes = await auth.api.signInWithOAuth2({
+    // Google is the only method, and it is registered as a DIRECT social
+    // provider (not a broker `genericOAuth` one), so it goes through
+    // `signInSocial`. The former `signInWithOAuth2` no longer exists — the
+    // broker plugin was removed.
+    const apiRes = await auth.api.signInSocial({
       body: {
-        providerId,
+        provider: "google",
         callbackURL: back,
         errorCallbackURL: `${back}&error=1`,
       },
@@ -95,8 +91,8 @@ export async function handleAuthPopupRequest(request: Request): Promise<Response
       });
     }
 
-    // 302 to the broker (which headlessly forwards to Google/X). Forward any
-    // Set-Cookie (OAuth state / PKCE) so the callback can complete in this popup.
+    // 302 straight to Google. Forward any Set-Cookie (OAuth state / PKCE) so the
+    // callback can complete in this popup.
     const headers = new Headers({ location, "cache-control": "no-store" });
     for (const cookie of apiRes.headers.getSetCookie()) {
       headers.append("set-cookie", cookie);

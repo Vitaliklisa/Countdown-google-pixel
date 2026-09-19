@@ -1,16 +1,5 @@
-import { Sn as defineErrorCodes, fn as env, yn as BetterAuthError } from "../_libs/@better-auth/core+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/url-DwGxbmbA.js
-var PACKAGE_VERSION = "1.6.30";
-var GENERIC_OAUTH_ERROR_CODES = defineErrorCodes({
-	INVALID_OAUTH_CONFIGURATION: "Invalid OAuth configuration",
-	TOKEN_URL_NOT_FOUND: "Invalid OAuth configuration. Token URL not found.",
-	PROVIDER_CONFIG_NOT_FOUND: "No config found for provider",
-	PROVIDER_ID_REQUIRED: "Provider ID is required",
-	INVALID_OAUTH_CONFIG: "Invalid OAuth configuration.",
-	SESSION_REQUIRED: "Session is required",
-	ISSUER_MISMATCH: "OAuth issuer mismatch. The authorization server issuer does not match the expected value (RFC 9207).",
-	ISSUER_MISSING: "OAuth issuer parameter missing. The authorization server did not include the required iss parameter (RFC 9207)."
-});
+import { dn as env, in as BetterAuthError } from "../_libs/@better-auth/core+[...].mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/url-Dj5TGTcl.js
 /**
 * Escapes a character if it has a special meaning in regular expressions
 * and returns the character as is if it doesn't
@@ -347,4 +336,4 @@ function resolveBaseURL(config, basePath, source, loadEnv, trustedProxyHeaders) 
 	return getBaseURL(void 0, basePath, request, loadEnv, trustedProxyHeaders);
 }
 //#endregion
-export { getOrigin as a, isRequestLike as c, getHost as i, resolveBaseURL as l, PACKAGE_VERSION as n, getProtocol as o, getBaseURL as r, isDynamicBaseURLConfig as s, GENERIC_OAUTH_ERROR_CODES as t, wildcardMatch as u };
+export { isDynamicBaseURLConfig as a, wildcardMatch as c, getProtocol as i, getHost as n, isRequestLike as o, getOrigin as r, resolveBaseURL as s, getBaseURL as t };

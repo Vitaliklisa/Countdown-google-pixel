@@ -1,5 +1,5 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { signIn, signInGoogle, authClient, googleDirectEnabled, GROK_PROVIDERS } from "@/lib/auth/client";
+import { createFileRoute } from "@tanstack/react-router";
+import { signInGoogle } from "@/lib/auth/client";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ClockIcon } from "lucide-animated";
@@ -35,21 +35,9 @@ function GoogleMark() {
 function Login() {
   const [error, setError] = useState<string | null>(null);
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
-  const router = useRouter();
 
-  const handleSignIn = async (providerId: string) => {
-    setLoadingProvider(providerId);
-    setError(null);
-    try {
-      await signIn(providerId, { callbackURL: "/" });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign in failed");
-      setLoadingProvider(null);
-    }
-  };
-
-  // Direct Google (app's own OAuth client). Preferred when configured because it
-  // needs no broker provisioning and works on any deployed origin.
+  // Google is the only sign-in method: the app holds its own OAuth client, so
+  // there is no broker hop and no provider list to iterate.
   const handleGoogleDirect = async () => {
     setLoadingProvider("google");
     setError(null);
@@ -73,36 +61,15 @@ function Login() {
         </div>
 
         <div className="flex flex-col gap-3">
-          {googleDirectEnabled ? (
-            <Button
-              variant="outline"
-              className="h-12 w-full justify-start gap-3 px-4"
-              onClick={() => void handleGoogleDirect()}
-              disabled={!!loadingProvider}
-            >
-              <GoogleMark />
-              <span>{loadingProvider === "google" ? "Connecting…" : "Continue with Google"}</span>
-            </Button>
-          ) : (
-            GROK_PROVIDERS.map((provider) => (
-              <Button
-                key={provider.providerId}
-                variant="outline"
-                className="h-12 w-full justify-start gap-3 px-4"
-                onClick={() => handleSignIn(provider.providerId)}
-                disabled={!!loadingProvider}
-              >
-                <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-sm bg-surface text-[10px] font-semibold text-accent">
-                  {provider.label.slice(0, 1)}
-                </span>
-                <span>
-                  {loadingProvider === provider.providerId
-                    ? "Connecting..."
-                    : `Continue with ${provider.label}`}
-                </span>
-              </Button>
-            ))
-          )}
+          <Button
+            variant="outline"
+            className="h-12 w-full justify-start gap-3 px-4"
+            onClick={() => void handleGoogleDirect()}
+            disabled={!!loadingProvider}
+          >
+            <GoogleMark />
+            <span>{loadingProvider === "google" ? "Connecting…" : "Continue with Google"}</span>
+          </Button>
         </div>
 
         {error && (

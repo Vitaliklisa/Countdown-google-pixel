@@ -25,7 +25,8 @@ export type GrokProvider = {
   label: string;
 };
 
-export const GROK_PROVIDERS: readonly GrokProvider[] = [
-  { providerId: "grok-google", idp: "google", label: "Google" },
-  { providerId: "grok-x", idp: "twitter", label: "X" },
-];
+// Google sign-in is now offered DIRECTLY (the app holds its own OAuth client —
+// see socialProviders.google in server.ts), so the broker-backed list is empty:
+// there is nothing to federate through the shared broker any more. The X/
+// Twitter entry was removed deliberately — this app only offers Google.
+export const GROK_PROVIDERS: readonly GrokProvider[] = [];

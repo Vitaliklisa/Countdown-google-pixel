@@ -122,39 +122,7 @@ export async function runSignOut({
   redirect();
 }
 
-/**
- * @typedef {object} PreSignInSteps
- * @property {boolean} livePreview Whether the app is the sandbox preview iframe.
- * @property {boolean} hasBearer Whether a preview bearer token is stored.
- * @property {() => unknown} requestSignOut Ask the server to end any prior session.
- * @property {() => void} clearToken Drop the stored bearer token.
- * @property {number} [timeoutMs]
- */
-
-/**
- * Drop any prior session before a new sign-in starts, so switching providers
- * actually switches identity.
- *
- * Deliberately BEST EFFORT — unlike `runSignOut` this never throws. It also
- * runs when there is no prior session at all, so treating a failure as fatal
- * would block first-time sign-in on a transport hiccup, for a visitor with no
- * session to protect. The subsequent OAuth flow issues a fresh session either
- * way. Only the wait is bounded, and by the same per-environment rule as
- * `runSignOut`: a deployed session dies server-side, so it gets the full
- * window rather than the preview's aggressive one.
- * @param {PreSignInSteps} steps
- * @returns {Promise<void>}
- */
-export async function runPreSignInSignOut({
-  livePreview,
-  hasBearer,
-  requestSignOut,
-  clearToken,
-  timeoutMs,
-}) {
-  // In the preview a missing bearer means there is nothing to clear.
-  if (hasBearer || !livePreview) {
-    await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
-  }
-  clearToken();
-}
+// `runPreSignInSignOut` used to live here: it dropped a prior session before
+// starting BROKER sign-in so switching provider (Google vs X) switched identity.
+// Google is now the only, direct provider, so there is no provider to switch and
+// nothing called it — it was removed with the broker.

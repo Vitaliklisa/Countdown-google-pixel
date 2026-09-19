@@ -1,58 +1,12 @@
 import { o as __toESM } from "../_runtime.mjs";
+import { t as __exportAll } from "./rolldown-runtime-D7D4PA-g.mjs";
+import { Qt as toKebabCase, Zt as capitalizeFirstLetter, en as createFetch, tn as isSafeUrlScheme } from "../_libs/@better-auth/core+[...].mjs";
+import { t as getBaseURL } from "./url-Dj5TGTcl.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
-import { s as __exportAll } from "./ssr.mjs";
-import { an as createFetch, nn as capitalizeFirstLetter, on as isSafeUrlScheme, rn as toKebabCase } from "../_libs/@better-auth/core+[...].mjs";
-import { n as PACKAGE_VERSION, r as getBaseURL, t as GENERIC_OAUTH_ERROR_CODES } from "./url-DwGxbmbA.mjs";
 import { a as atom, i as onSet, n as STORE_UNMOUNT_DELAY, r as onMount, t as listenKeys } from "../_libs/nanostores.mjs";
 import { n as defu } from "../_libs/defu.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/client-HjgKo5-L.js
+//#region node_modules/.nitro/vite/services/ssr/assets/client-nWlBYso_.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
-var genericOAuthClient = () => {
-	return {
-		id: "generic-oauth-client",
-		version: PACKAGE_VERSION,
-		$InferServerPlugin: {},
-		$ERROR_CODES: GENERIC_OAUTH_ERROR_CODES
-	};
-};
-function isPlainObject(value) {
-	if (typeof value !== "object" || value === null) return false;
-	const prototype = Object.getPrototypeOf(value);
-	return prototype === Object.prototype || prototype === null;
-}
-/**
-* Deep structural equality for JSON-serializable values.
-* Handles: primitives, null, arrays, and plain objects.
-* Short-circuits on referential equality at every recursion level.
-*/
-function isJsonEqual(a, b) {
-	if (a === b) return true;
-	if (Array.isArray(a) && Array.isArray(b)) {
-		if (a.length !== b.length) return false;
-		for (let i = 0; i < a.length; i++) if (!isJsonEqual(a[i], b[i])) return false;
-		return true;
-	}
-	if (isPlainObject(a) && isPlainObject(b)) {
-		const keysA = Object.keys(a);
-		const keysB = Object.keys(b);
-		if (keysA.length !== keysB.length) return false;
-		for (const key of keysA) if (!(key in b) || !isJsonEqual(a[key], b[key])) return false;
-		return true;
-	}
-	return false;
-}
-/**
-* Attach an equality gate to a nanostores atom via `onSet`.
-* When `isEqual(currentValue, newValue)` returns true, the `set()` call
-* is aborted: no listeners fire, no framework re-renders occur.
-*
-* Returns the unsubscribe function from `onSet`.
-*/
-function withEquality(store, isEqual) {
-	return onSet(store, ({ newValue, abort }) => {
-		if (isEqual(store.value, newValue)) abort();
-	});
-}
 var PROTO_POLLUTION_PATTERNS = {
 	proto: /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/,
 	constructor: /"(?:c|\\u0063)(?:o|\\u006[Ff])(?:n|\\u006[Ee])(?:s|\\u0073)(?:t|\\u0074)(?:r|\\u0072)(?:u|\\u0075)(?:c|\\u0063)(?:t|\\u0074)(?:o|\\u006[Ff])(?:r|\\u0072)"\s*:/,
@@ -133,6 +87,44 @@ var redirectPlugin = {
 		}
 	} }
 };
+function isPlainObject(value) {
+	if (typeof value !== "object" || value === null) return false;
+	const prototype = Object.getPrototypeOf(value);
+	return prototype === Object.prototype || prototype === null;
+}
+/**
+* Deep structural equality for JSON-serializable values.
+* Handles: primitives, null, arrays, and plain objects.
+* Short-circuits on referential equality at every recursion level.
+*/
+function isJsonEqual(a, b) {
+	if (a === b) return true;
+	if (Array.isArray(a) && Array.isArray(b)) {
+		if (a.length !== b.length) return false;
+		for (let i = 0; i < a.length; i++) if (!isJsonEqual(a[i], b[i])) return false;
+		return true;
+	}
+	if (isPlainObject(a) && isPlainObject(b)) {
+		const keysA = Object.keys(a);
+		const keysB = Object.keys(b);
+		if (keysA.length !== keysB.length) return false;
+		for (const key of keysA) if (!(key in b) || !isJsonEqual(a[key], b[key])) return false;
+		return true;
+	}
+	return false;
+}
+/**
+* Attach an equality gate to a nanostores atom via `onSet`.
+* When `isEqual(currentValue, newValue)` returns true, the `set()` call
+* is aborted: no listeners fire, no framework re-renders occur.
+*
+* Returns the unsubscribe function from `onSet`.
+*/
+function withEquality(store, isEqual) {
+	return onSet(store, ({ newValue, abort }) => {
+		if (isEqual(store.value, newValue)) abort();
+	});
+}
 var kBroadcastChannel = Symbol.for("better-auth:broadcast-channel");
 var now$1 = () => Math.floor(Date.now() / 1e3);
 var WindowBroadcastChannel = class {
@@ -837,38 +829,11 @@ async function runSignOut({ livePreview, hasBearer, requestSignOut, clearToken, 
 	clearToken();
 	redirect();
 }
-/**
-* @typedef {object} PreSignInSteps
-* @property {boolean} livePreview Whether the app is the sandbox preview iframe.
-* @property {boolean} hasBearer Whether a preview bearer token is stored.
-* @property {() => unknown} requestSignOut Ask the server to end any prior session.
-* @property {() => void} clearToken Drop the stored bearer token.
-* @property {number} [timeoutMs]
-*/
-/**
-* Drop any prior session before a new sign-in starts, so switching providers
-* actually switches identity.
-*
-* Deliberately BEST EFFORT — unlike `runSignOut` this never throws. It also
-* runs when there is no prior session at all, so treating a failure as fatal
-* would block first-time sign-in on a transport hiccup, for a visitor with no
-* session to protect. The subsequent OAuth flow issues a fresh session either
-* way. Only the wait is bounded, and by the same per-environment rule as
-* `runSignOut`: a deployed session dies server-side, so it gets the full
-* window rather than the preview's aggressive one.
-* @param {PreSignInSteps} steps
-* @returns {Promise<void>}
-*/
-async function runPreSignInSignOut({ livePreview, hasBearer, requestSignOut, clearToken, timeoutMs }) {
-	if (hasBearer || !livePreview) await settleWithin(requestSignOut, timeoutMs ?? signOutTimeoutMs(livePreview));
-	clearToken();
-}
 var client_exports = /* @__PURE__ */ __exportAll({
 	authClient: () => authClient,
 	authEnabled: () => true,
 	getBearerToken: () => getBearerToken,
 	googleDirectEnabled: () => false,
-	signIn: () => signIn,
 	signInGoogle: () => signInGoogle,
 	signOut: () => signOut
 });
@@ -886,14 +851,11 @@ var client_exports = /* @__PURE__ */ __exportAll({
 * leaves the bearer token in place, and `onRequest` keeps re-attaching it, so
 * the visitor stays signed in.
 */
-var authClient = createAuthClient({
-	plugins: [genericOAuthClient()],
-	fetchOptions: { onRequest(ctx) {
-		const token = getBearerToken();
-		if (token) ctx.headers.set("Authorization", `Bearer ${token}`);
-		return ctx;
-	} }
-});
+var authClient = createAuthClient({ fetchOptions: { onRequest(ctx) {
+	const token = getBearerToken();
+	if (token) ctx.headers.set("Authorization", `Bearer ${token}`);
+	return ctx;
+} } });
 var BEARER_KEY = "grok-auth.bearer-token";
 /** The stored preview bearer token, or null. */
 function getBearerToken() {
@@ -920,65 +882,15 @@ function inLivePreview() {
 	return typeof window !== "undefined" && window.location.hostname.endsWith(".grok-sandbox.com");
 }
 /**
-* Start sign-in with one upstream provider (`providerId` from `GROK_PROVIDERS`),
-* federating through the Grok auth broker.
-*
-* - **Live preview** (`*.grok-sandbox.com` iframe): opens a POPUP to
-*   `/auth/popup`, served by the template Vite plugin (see `vite.config.ts` +
-*   `popup.server.ts`) — 302s to the broker/upstream login (no app chrome) and,
-*   on return, posts the session bearer token back. We store it and refresh the
-*   session; no top-level navigation of the iframe to the broker.
-* - **Deployed** (and local non-iframe): a normal full-page redirect into the broker.
-*
-* Either way it clears any existing local session FIRST so switching providers
-* actually switches identity.
-*/
-async function signIn(providerId, opts = {}) {
-	const callbackURL = opts.callbackURL ?? "/";
-	const errorCallbackURL = opts.errorCallbackURL ?? "/";
-	const popup = inLivePreview() ? openSignInPopup(providerId) : null;
-	await runPreSignInSignOut({
-		livePreview: inLivePreview(),
-		hasBearer: Boolean(getBearerToken()),
-		requestSignOut: () => authClient.signOut(),
-		clearToken: () => setBearerToken(null)
-	});
-	if (inLivePreview()) {
-		if (!popup) throw new Error("Pop-up blocked — allow pop-ups for sign-in");
-		const token = await waitForPopupToken(popup);
-		if (!token) throw new Error("Sign-in was cancelled or failed");
-		setBearerToken(token);
-		try {
-			await authClient.getSession();
-		} catch {}
-		if (typeof window !== "undefined") {
-			const dest = new URL(callbackURL, window.location.origin);
-			const here = window.location;
-			if (dest.origin !== here.origin || dest.pathname !== here.pathname || dest.search !== here.search) window.location.href = callbackURL;
-		}
-		return;
-	}
-	const { data, error } = await authClient.signIn.oauth2({
-		providerId,
-		callbackURL,
-		errorCallbackURL
-	});
-	if (error) throw new Error(error.message ?? "Sign-in failed");
-	if (data?.url) window.location.href = data.url;
-}
-/**
-* Start sign-in with Google DIRECTLY (not through the broker).
+* Start sign-in with Google — the app's ONLY sign-in method.
 *
 * Uses Better Auth's `social` flow, which hits this app's own
 * `/api/auth/sign-in/social` and redirects to Google with the app's own client
-* id. Distinct from `signIn()` above, which drives the broker's `oauth2`
-* provider — the two register different endpoints (`/callback/google` vs
-* `/oauth2/callback/<providerId>`), so they cannot share a code path.
+* id (see `socialProviders.google` in server.ts).
 *
-* Redirect-based (no popup) in every environment: a direct Google OAuth
-* redirect returns to this app's origin, which works top-level on a deployed
-* host. In the live-preview iframe we keep using the broker popup instead — the
-* UI only offers this button when `googleDirectEnabled` is true.
+* The former broker `signIn()` (and its popup helpers) was removed with the
+* broker: Google is now a direct provider, so there is no `oauth2` hop and no
+* provider id to dispatch on.
 */
 async function signInGoogle(opts = {}) {
 	const { data, error } = await authClient.signIn.social({
@@ -988,54 +900,6 @@ async function signInGoogle(opts = {}) {
 	});
 	if (error) throw new Error(error.message ?? "Google sign-in failed");
 	if (data?.url) window.location.href = data.url;
-}
-/**
-* Open `/auth/popup` in a new window. Must run synchronously inside the click
-* handler (no await before this). The path is served by the template Vite
-* plugin (`authPopupPlugin` in vite.config.ts) — NOT by a React route.
-*
-* Opens the real URL directly (not about:blank → assign). From a cross-origin
-* iframe the about:blank dance often fails on the first click and the window
-* ends up showing the app shell.
-*/
-function openSignInPopup(providerId) {
-	const url = `${window.location.origin}/auth/popup?providerId=${encodeURIComponent(providerId)}`;
-	const name = `grok-signin-${Date.now()}`;
-	return window.open(url, name, "popup,width=500,height=650");
-}
-/**
-* Wait for the popup's completion page to postMessage the session bearer (or
-* for the user to dismiss the popup).
-*/
-function waitForPopupToken(popup) {
-	return new Promise((resolve) => {
-		const origin = window.location.origin;
-		let settled = false;
-		let closeTimer;
-		const settle = (token) => {
-			if (settled) return;
-			settled = true;
-			cleanup();
-			resolve(token);
-		};
-		const onMessage = (event) => {
-			if (event.origin !== origin) return;
-			const data = event.data;
-			if (!data || data.source !== "grok-auth-popup") return;
-			settle(data.token ?? null);
-		};
-		const pollTimer = window.setInterval(() => {
-			if (!popup.closed) return;
-			window.clearInterval(pollTimer);
-			closeTimer = window.setTimeout(() => settle(null), 400);
-		}, 300);
-		function cleanup() {
-			window.clearInterval(pollTimer);
-			if (closeTimer !== void 0) window.clearTimeout(closeTimer);
-			window.removeEventListener("message", onMessage);
-		}
-		window.addEventListener("message", onMessage);
-	});
 }
 /**
 * Sign out of THIS app's local session, clear the preview token, then redirect.
@@ -1064,4 +928,4 @@ async function signOut(redirectTo = "/") {
 	});
 }
 //#endregion
-export { signOut as a, client_exports as n, signIn as r, authClient as t };
+export { signOut as i, client_exports as n, signInGoogle as r, authClient as t };
