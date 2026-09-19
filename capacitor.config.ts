@@ -31,10 +31,38 @@ const config: CapacitorConfig = {
     url: serverUrl,
     cleartext: isCleartext,
     androidScheme: isCleartext ? "http" : "https",
+    /**
+     * Treat every navigation to the app's own origin as INSIDE the app.
+     *
+     * Without this, the WebView hands top-level navigations to the system
+     * browser, so an OAuth round-trip lands in Chrome — which gets the session
+     * cookie in ITS cookie jar — and the app, with a separate jar, stays signed
+     * out. That was the reported "signs me into the web version only" bug.
+     */
+    allowNavigation: [new URL(serverUrl).host],
   },
   android: {
     // Only relevant while talking to a plain-http dev server.
     allowMixedContent: isCleartext,
+  },
+  plugins: {
+    GoogleSignIn: {
+      /**
+       * Android OAuth client id. NOT the web client id from Google Cloud — a
+       * WebView cannot complete Google's browser-based OAuth (Google blocks it
+       * with "This browser or app may not be secure"), so Android sign-in must
+       * go through the native Google Sign-In SDK, which needs its own OAuth
+       * client of type "Android" registered against this package name + the
+       * signing key SHA-1.
+       *
+       * Left empty on purpose: `googleNativeEnabled` in the app is false until
+       * this is set, so the UI falls back to the web flow rather than showing a
+       * button that cannot work. See ANDROID.md for how to create it.
+       */
+      serverClientId: process.env.GOOGLE_ANDROID_CLIENT_ID ?? "",
+      scopes: ["email", "profile"],
+      forceCodeForRefreshToken: true,
+    },
   },
 };
 

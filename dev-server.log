@@ -130,3 +130,28 @@ See https://www.postgresql.org/docs/current/libpq-ssl.html for libpq SSL mode de
 [2m8:56:45 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mandroid/build/reports/problems/problems-report.html[22m
 [2m8:56:52 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
 [2m9:27:54 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mandroid/build/reports/problems/problems-report.html[22m
+[2m9:56:14 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[2m9:56:59 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct, /src/routes/login.tsx?tsr-split=component[22m
+[2m9:56:59 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/lib/auth/client.ts[22m
+[2m9:56:59 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m program reload
+[2m9:59:04 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[2m10:00:04 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[2m10:00:15 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[2m10:00:23 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[2m10:00:28 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[2m10:01:02 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/styles.css?direct[22m
+[with-app-env] DATABASE_URL set — using Postgres (Neon).
+[with-app-env] GOOGLE_CLIENT_ID set — direct Google sign-in enabled.
+[2m10:01:55 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because lockfile has changed
+
+  [32m[1mVITE[22m v8.2.2[39m  [2mready in [0m[1m1686[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m8080[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://26.104.135.153:[1m8080[22m/[39m  [2mRadmin VPN[22m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.40.156:[1m8080[22m/[39m  [2mWiFi[22m
+[2m10:02:08 p.m.[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m connected.
+[2m10:04:07 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mdependencies optimized: [33m@better-auth/core/env, @better-auth/core/error, @better-auth/core/utils/string, @better-auth/core/utils/url, @better-fetch/fetch, defu, nanostores[32m[39m
+[2m10:04:07 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32moptimized dependencies changed. reloading[39m
+[2m10:04:20 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mdependencies optimized: [33m@tanstack/router-core, @tanstack/router-core/isServer, @tanstack/router-core/ssr/client, seroval[32m[39m
+[2m10:05:12 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mandroid/build/reports/problems/problems-report.html[22m
+[2m10:05:35 p.m.[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mandroid/build/reports/problems/problems-report.html[22m

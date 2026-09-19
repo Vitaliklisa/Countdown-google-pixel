@@ -169,6 +169,18 @@ function main(argv) {
   if (env.VITE_GOOGLE_DIRECT === "true") {
     console.log("[with-app-env] GOOGLE_CLIENT_ID set — direct Google sign-in enabled.");
   }
+
+  // Publish the PUBLIC Google client id for the native (Capacitor) sign-in path.
+  // The plugin needs it as `initialize({ clientId })`, and it must be the WEB
+  // client id even on Android (it becomes the token audience). A client id is
+  // public — it ships in every web page — so it is safe in the client bundle;
+  // GOOGLE_CLIENT_SECRET must NEVER be published this way.
+  env.VITE_GOOGLE_WEB_CLIENT_ID ??= env.GOOGLE_CLIENT_ID ?? "";
+
+  // Whether the native Google path is usable at all. Gated on a non-empty client
+  // id so a build without Google creds falls back to the web flow instead of
+  // offering a button that cannot work.
+  env.VITE_NATIVE_GOOGLE ??= env.VITE_GOOGLE_WEB_CLIENT_ID ? "true" : "false";
   const child = spawn(command, args, {
     stdio: "inherit",
     env,

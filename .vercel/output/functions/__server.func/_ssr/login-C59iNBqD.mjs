@@ -1,10 +1,10 @@
 import { o as __toESM } from "../_runtime.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
-import { r as signInGoogle } from "./client-nWlBYso_.mjs";
+import { r as signInGoogle } from "./client-Aj463Vej.mjs";
 import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].mjs";
 import { t as Button } from "./button--AwAlf_W.mjs";
 import { i as ClockIcon } from "../_libs/lucide-animated+motion.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/login-ttMHOjCo.js
+//#region node_modules/.nitro/vite/services/ssr/assets/login-C59iNBqD.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 /** The Google "G" mark, inline so it needs no asset fetch. */

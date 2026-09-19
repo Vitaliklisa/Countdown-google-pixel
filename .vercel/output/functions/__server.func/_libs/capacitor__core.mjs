@@ -508,4 +508,4 @@ var SystemBarsPluginWeb = class extends WebPlugin {
 };
 registerPlugin("SystemBars", { web: () => new SystemBarsPluginWeb() });
 //#endregion
-export { registerPlugin as t };
+export { registerPlugin as n, WebPlugin as t };

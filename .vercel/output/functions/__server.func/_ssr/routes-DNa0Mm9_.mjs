@@ -2,19 +2,22 @@ import { o as __toESM } from "../_runtime.mjs";
 import { t as __exportAll } from "./rolldown-runtime-D7D4PA-g.mjs";
 import { It as _enum, Rt as array, Wt as object, qt as string } from "../_libs/@better-auth/core+[...].mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
-import { i as signOut, t as authClient } from "./client-nWlBYso_.mjs";
+import { i as signOut, t as authClient } from "./client-Aj463Vej.mjs";
 import { _ as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { f as require_jsx_runtime, n as AvatarFallback$1, r as AvatarImage$1, t as Avatar$1 } from "../_libs/@radix-ui/react-avatar+[...].mjs";
 import { a as getServerFnById, i as TSS_SERVER_FUNCTION, r as createServerFn } from "./ssr.mjs";
-import { t as authMiddleware } from "./middleware-e37XbyYF.mjs";
+import { t as authMiddleware } from "./middleware-B8_TJP-B.mjs";
 import { n as cn, t as Button } from "./button--AwAlf_W.mjs";
-import { a as HistoryIcon, c as PartyPopperIcon, d as TimerIcon, f as UserIcon, i as ClockIcon, l as PlusIcon, m as UsersIcon, n as CalendarDaysIcon, o as HourglassIcon, p as UserRoundPlusIcon, r as CheckIcon, s as LogoutIcon, t as ArrowLeftIcon, u as SparklesIcon } from "../_libs/lucide-animated+motion.mjs";
-import { n as ChevronDown, r as Check } from "../_libs/lucide-react.mjs";
+import { a as HistoryIcon, c as MoonIcon, d as SparklesIcon, f as SunIcon, g as UsersIcon, h as UserRoundPlusIcon, i as ClockIcon, l as PartyPopperIcon, m as UserIcon, n as CalendarDaysIcon, o as HourglassIcon, p as TimerIcon, r as CheckIcon, s as LogoutIcon, t as ArrowLeftIcon, u as PlusIcon } from "../_libs/lucide-animated+motion.mjs";
+import { a as ChevronDown, i as Copy, n as Trash2, o as Check, r as Share2 } from "../_libs/lucide-react.mjs";
+import { n as useTheme } from "./router-BSXbvxBx.mjs";
 import { a as differenceInMinutes, c as addYears, d as addMonths, f as addDays, i as differenceInMonths, l as addMinutes, n as differenceInYears, o as differenceInHours, r as differenceInSeconds, s as differenceInDays, t as format, u as addHours } from "../_libs/date-fns.mjs";
 import { t as create } from "../_libs/zustand.mjs";
-import { a as Separator2, i as Root2, n as Item2, o as Trigger, r as Portal2, t as Content2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
+import { a as Separator2, i as Root2, n as Item2, o as Trigger, r as Portal2, t as Content2 } from "../_libs/@radix-ui/react-context-menu+[...].mjs";
 import { a as SelectItemIndicator, c as SelectTrigger$1, i as SelectItem$1, l as SelectValue$1, n as SelectContent$1, o as SelectItemText, r as SelectIcon, s as SelectPortal, t as Select$1, u as SelectViewport } from "../_libs/@radix-ui/react-select+[...].mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-BnsdJxZK.js
+import { a as Separator2$1, i as Root2$1, n as Item2$1, o as Trigger$1, r as Portal2$1, t as Content2$1 } from "../_libs/radix-ui__react-dropdown-menu.mjs";
+import { t as toast } from "../_libs/sonner.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-DNa0Mm9_.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var createSsrRpc = (functionId) => {
@@ -1048,27 +1051,119 @@ function InvitationsBanner({ onAccepted }) {
 		})]
 	});
 }
-var DropdownMenu = Root2;
-var DropdownMenuTrigger = Trigger;
-var DropdownMenuContent = import_react.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal2, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2, {
+/**
+* Long-press / right-click actions for an event row.
+*
+* Radix's ContextMenu opens on **both** long-press (touch) and right-click
+* (mouse), so one implementation covers your Pixel and a desktop browser. That
+* matters here: mobile has no hover, so a hover-revealed menu would be
+* unreachable on the phone.
+*
+* Actions map to intent, not implementation:
+*   • Duplicate — clone the event, defaulting to the SAME title + one year later
+*   • Share     — Web Share API on device, clipboard fallback on desktop
+*   • Delete    — soft delete (server keeps the row; see events.api.ts)
+*/
+function EventContextMenu({ event, children, onDuplicate, onDelete, onShare }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Root2, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trigger, {
+		asChild: true,
+		children
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal2, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Content2, {
+		className: cn("z-50 min-w-48 overflow-hidden rounded-md border-border bg-surface-2 p-1", "shadow-lg backdrop-blur-sm", "data-[state=open]:animate-in data-[state=closed]:animate-out", "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"),
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Item, {
+				onSelect: onShare,
+				icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Share2, { size: 15 }),
+				children: "Share event"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Item, {
+				onSelect: onDuplicate,
+				icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Copy, { size: 15 }),
+				children: "Duplicate"
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Separator2, { className: "my-1 h-px bg-border" }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Item, {
+				onSelect: onDelete,
+				icon: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { size: 15 }),
+				danger: true,
+				children: "Delete"
+			})
+		]
+	}) })] });
+}
+function Item({ children, icon, onSelect, danger }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Item2, {
+		onSelect,
+		className: cn("flex min-h-11 cursor-pointer items-center gap-2.5 rounded-sm px-3 text-sm outline-none", danger ? "text-danger data-[highlighted]:bg-danger/15" : "text-fg data-[highlighted]:bg-surface"),
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: danger ? "text-danger" : "text-muted",
+			children: icon
+		}), children]
+	});
+}
+/**
+* Clone an event as a new one. Kept title-identical (a duplicate is a copy, not
+* a rename) with the date pushed out one year so the copy is still upcoming
+* rather than instantly "arrived", which is the common intent for re-using a
+* recurring occasion.
+*/
+function duplicateDraft(event) {
+	const next = new Date(event.at);
+	next.setFullYear(next.getFullYear() + 1);
+	return {
+		title: event.title,
+		description: event.description ?? "",
+		at: next.toISOString()
+	};
+}
+/**
+* Share an event. Uses the native share sheet where available (Android/iOS,
+* and Safari), falling back to the clipboard on desktop. Always resolves — a
+* declined share or a blocked clipboard must not look like a crash.
+*/
+async function shareEvent(event) {
+	const when = new Date(event.at).toLocaleString();
+	const text = `${event.title} — ${when}`;
+	const url = typeof window !== "undefined" ? window.location.origin : "";
+	const nav = typeof navigator !== "undefined" ? navigator : void 0;
+	if (nav?.share) try {
+		await nav.share({
+			title: event.title,
+			text,
+			url
+		});
+		return "shared";
+	} catch (err) {
+		if (err instanceof Error && err.name === "AbortError") return "shared";
+	}
+	try {
+		await nav?.clipboard?.writeText(`${text}\n${url}`);
+		return "copied";
+	} catch {
+		return "failed";
+	}
+}
+var DropdownMenu = Root2$1;
+var DropdownMenuTrigger = Trigger$1;
+var DropdownMenuContent = import_react.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal2$1, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$1, {
 	ref,
 	sideOffset,
 	className: cn("z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-surface p-1 text-fg shadow-soft data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2", className),
 	...props
 }) }));
-DropdownMenuContent.displayName = Content2.displayName;
-var DropdownMenuItem = import_react.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Item2, {
+DropdownMenuContent.displayName = Content2$1.displayName;
+var DropdownMenuItem = import_react.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Item2$1, {
 	ref,
 	className: cn("relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-surface-2 focus:text-fg data-[disabled]:pointer-events-none data-[disabled]:opacity-50", inset && "pl-8", className),
 	...props
 }));
-DropdownMenuItem.displayName = Item2.displayName;
-var DropdownMenuSeparator = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Separator2, {
+DropdownMenuItem.displayName = Item2$1.displayName;
+var DropdownMenuSeparator = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Separator2$1, {
 	ref,
 	className: cn("-mx-1 my-1 h-px bg-border", className),
 	...props
 }));
-DropdownMenuSeparator.displayName = Separator2.displayName;
+DropdownMenuSeparator.displayName = Separator2$1.displayName;
 var Avatar = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Avatar$1, {
 	ref,
 	className: cn("relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full", className),
@@ -1109,25 +1204,31 @@ function BrandMark() {
 		})]
 	});
 }
-function EventRow({ event, active, now, onSelect }) {
+function EventRow({ event, active, now, onSelect, onDuplicate, onDelete, onShare }) {
 	const past = new Date(event.at).getTime() <= now.getTime();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-		type: "button",
-		onClick: onSelect,
-		className: cn("flex min-h-14 w-full items-center justify-between gap-3 rounded-md px-4 py-3 text-left transition-colors duration-(--motion-quick)", active ? "bg-surface-2" : "bg-surface hover:bg-surface-2"),
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-			className: "min-w-0",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "block truncate text-sm font-medium text-fg",
-				children: event.title
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "block truncate text-xs text-muted",
-				children: format(new Date(event.at), "MMM d, yyyy · h:mm a")
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EventContextMenu, {
+		event,
+		onDuplicate,
+		onDelete,
+		onShare,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+			type: "button",
+			onClick: onSelect,
+			className: cn("flex min-h-14 w-full items-center justify-between gap-3 rounded-md px-4 py-3 text-left transition-colors duration-(--motion-quick)", "select-none touch-manipulation", active ? "bg-surface-2" : "bg-surface hover:bg-surface-2"),
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+				className: "min-w-0",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+					className: "block truncate text-sm font-medium text-fg",
+					children: event.title
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+					className: "block truncate text-xs text-muted",
+					children: format(new Date(event.at), "MMM d, yyyy · h:mm a")
+				})]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+				className: cn("flex shrink-0 items-center gap-1.5 text-xs", past ? "text-accent" : "text-subtle"),
+				children: [past ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HistoryIcon, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarDaysIcon, { size: 13 }), past ? "Passed" : "Upcoming"]
 			})]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-			className: cn("flex shrink-0 items-center gap-1.5 text-xs", past ? "text-accent" : "text-subtle"),
-			children: [past ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HistoryIcon, { size: 13 }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CalendarDaysIcon, { size: 13 }), past ? "Passed" : "Upcoming"]
-		})]
+		})
 	});
 }
 function EmptyState({ onCompose }) {
@@ -1165,24 +1266,78 @@ function EmptyState({ onCompose }) {
 		})]
 	});
 }
+/**
+* The appearance switch. Rendered both signed-in and signed-out, because the
+* theme is a device preference, not an account one — needing to sign in before
+* you can pick light/dark would be odd.
+*/
+function ThemeItems() {
+	const { theme, setTheme } = useTheme();
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+		/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuSeparator, {}),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenuItem, {
+			onClick: () => setTheme("light"),
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SunIcon, {
+					size: 14,
+					className: "mr-2"
+				}),
+				"Light",
+				theme === "light" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CheckIcon, {
+					size: 14,
+					className: "ml-auto text-accent"
+				}) : null
+			]
+		}),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenuItem, {
+			onClick: () => setTheme("dark"),
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MoonIcon, {
+					size: 14,
+					className: "mr-2"
+				}),
+				"Dark",
+				theme === "dark" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CheckIcon, {
+					size: 14,
+					className: "ml-auto text-accent"
+				}) : null
+			]
+		})
+	] });
+}
 function UserButton() {
 	const { user } = useCurrentUserState();
-	if (!user) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
-		variant: "ghost",
-		size: "sm",
+	if (!user) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenu, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuTrigger, {
 		asChild: true,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
-			to: "/login",
-			className: "flex items-center gap-2",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserIcon, { size: 16 }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Sign in" })]
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
+			variant: "ghost",
+			size: "icon",
+			className: "rounded-full",
+			"aria-label": "Menu",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserIcon, { size: 16 })
 		})
-	});
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenuContent, {
+		align: "end",
+		className: "w-48",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuItem, {
+			asChild: true,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+				to: "/login",
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(UserIcon, {
+					size: 14,
+					className: "mr-2"
+				}), "Sign in"]
+			})
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeItems, {})]
+	})] });
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenu, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuTrigger, {
 		asChild: true,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Button, {
 			variant: "ghost",
 			size: "icon",
 			className: "rounded-full",
+			"aria-label": "Account",
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Avatar, {
 				className: "size-8",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarImage, { src: user.profileImageUrl ?? void 0 }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AvatarFallback, {
@@ -1205,6 +1360,7 @@ function UserButton() {
 					children: user.primaryEmail
 				})]
 			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ThemeItems, {}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuSeparator, {}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(DropdownMenuItem, {
 				onClick: () => signOut("/"),
@@ -1217,7 +1373,7 @@ function UserButton() {
 		]
 	})] });
 }
-function HomeView({ featured, events, now, onCompose, onEdit, onSelect, onInviteAccepted }) {
+function HomeView({ featured, events, now, onCompose, onEdit, onSelect, onInviteAccepted, onDuplicate, onDelete, onShare }) {
 	const others = featured ? events.filter((event) => event.id !== featured.id) : events;
 	if (!featured) return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "flex min-h-0 flex-1 flex-col",
@@ -1301,7 +1457,10 @@ function HomeView({ featured, events, now, onCompose, onEdit, onSelect, onInvite
 								event,
 								active: false,
 								now,
-								onSelect: () => onSelect(event.id)
+								onSelect: () => onSelect(event.id),
+								onDuplicate: () => onDuplicate(event),
+								onDelete: () => onDelete(event.id),
+								onShare: () => onShare(event)
 							}) }, event.id))
 						})]
 					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "flex-1" })
@@ -1352,7 +1511,7 @@ function UntilApp() {
 		if (isPending || !user?.id) return;
 		let cancelled = false;
 		(async () => {
-			const { registerPush } = await import("./push-B7yVq9Ex.mjs");
+			const { registerPush } = await import("./push-CgutjsQY.mjs");
 			if (cancelled) return;
 			try {
 				await registerPush();
@@ -1402,6 +1561,19 @@ function UntilApp() {
 		now,
 		onInviteAccepted: () => {
 			if (user?.id) refresh(user.id);
+		},
+		onDuplicate: async (event) => {
+			await addEvent(duplicateDraft(event), user?.id);
+			toast.success("Duplicated — edit and save");
+		},
+		onDelete: async (id) => {
+			await removeEvent(id, user?.id);
+			toast.success("Event deleted");
+		},
+		onShare: async (event) => {
+			const result = await shareEvent(event);
+			if (result === "copied") toast.success("Copied to clipboard");
+			if (result === "failed") toast.error("Could not share this event");
 		},
 		onCompose: () => {
 			setEditingId(null);

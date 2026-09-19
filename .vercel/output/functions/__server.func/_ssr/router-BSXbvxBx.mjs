@@ -1,12 +1,12 @@
-import { o as __toESM, r as __exportAll } from "../_runtime.mjs";
+import { o as __toESM } from "../_runtime.mjs";
+import { t as __exportAll } from "./rolldown-runtime-D7D4PA-g.mjs";
 import { Jt as union, Ut as number, Vt as literal, Wt as object, qt as string } from "../_libs/@better-auth/core+[...].mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { f as createRouter, g as createRootRoute, h as createFileRoute, l as Scripts, m as lazyRouteComponent, p as Outlet, u as HeadContent, v as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { f as require_jsx_runtime } from "../_libs/@radix-ui/react-avatar+[...].mjs";
+import { t as auth } from "./server-CFfXDBwo.mjs";
 import { t as TriangleAlert } from "../_libs/lucide-react.mjs";
-import { t as auth } from "./server-DHAPBQAY.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-B_3398yW.js
-var router_B_3398yW_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
+//#region node_modules/.nitro/vite/services/ssr/assets/router-BSXbvxBx.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var FALLBACK_MESSAGE = "An unexpected error occurred. Try reloading the page.";
@@ -300,13 +300,69 @@ function PreviewHostBridge() {
 	}, [router]);
 	return null;
 }
+var THEME_STORAGE_KEY = "until.theme.v1";
 /**
 * Runs before paint (inlined in `__root.tsx`) so the first frame already wears
 * the stored theme — no white flash for dark-theme users, no dark flash for
 * light ones.
 */
-var themeBootstrapScript = `(function(){try{var s=localStorage.getItem(${JSON.stringify("until.theme.v1")});var m=window.matchMedia("(prefers-color-scheme: dark)").matches;var t=s==="light"||s==="dark"?s:(m?"dark":"light");var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.dataset.theme=t;r.style.colorScheme=t;}catch(e){document.documentElement.classList.remove("dark");}})();`;
-var styles_default = "/assets/styles-CZKUP5VF.css";
+var themeBootstrapScript = `(function(){try{var s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});var m=window.matchMedia("(prefers-color-scheme: dark)").matches;var t=s==="light"||s==="dark"?s:(m?"dark":"light");var r=document.documentElement;r.classList.toggle("dark",t==="dark");r.dataset.theme=t;r.style.colorScheme=t;}catch(e){document.documentElement.classList.remove("dark");}})();`;
+function readStoredTheme() {
+	if (typeof window === "undefined") return null;
+	try {
+		const raw = window.localStorage.getItem(THEME_STORAGE_KEY);
+		return raw === "light" || raw === "dark" ? raw : null;
+	} catch {
+		return null;
+	}
+}
+function systemTheme() {
+	if (typeof window === "undefined" || !window.matchMedia) return "dark";
+	return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+function applyTheme(theme) {
+	if (typeof document === "undefined") return;
+	const root = document.documentElement;
+	root.classList.toggle("dark", theme === "dark");
+	root.dataset.theme = theme;
+	root.style.colorScheme = theme;
+}
+/**
+* Theme state: stored choice wins, otherwise follow the OS. `theme` starts as
+* the default and is corrected on mount, so SSR output stays stable.
+*/
+function useTheme() {
+	const [theme, setThemeState] = (0, import_react.useState)("dark");
+	(0, import_react.useEffect)(() => {
+		const initial = readStoredTheme() ?? systemTheme();
+		setThemeState(initial);
+		applyTheme(initial);
+		const media = window.matchMedia("(prefers-color-scheme: dark)");
+		const onSystemChange = (event) => {
+			if (readStoredTheme()) return;
+			const next = event.matches ? "dark" : "light";
+			setThemeState(next);
+			applyTheme(next);
+		};
+		media.addEventListener("change", onSystemChange);
+		return () => media.removeEventListener("change", onSystemChange);
+	}, []);
+	const setTheme = (0, import_react.useCallback)((next) => {
+		setThemeState(next);
+		applyTheme(next);
+		try {
+			window.localStorage.setItem(THEME_STORAGE_KEY, next);
+		} catch {}
+	}, []);
+	return {
+		theme,
+		setTheme,
+		toggle: (0, import_react.useCallback)(() => {
+			setTheme(theme === "dark" ? "light" : "dark");
+		}, [setTheme, theme])
+	};
+}
+var styles_default = "/assets/styles-DjbGfXkb.css";
 var APP_NAME = "Until";
 var Route$3 = createRootRoute({
 	head: () => ({
@@ -369,9 +425,9 @@ var Route$3 = createRootRoute({
 		})]
 	})
 });
-var $$splitComponentImporter$1 = () => import("./routes-BnsdJxZK.mjs").then((n) => n.t);
+var $$splitComponentImporter$1 = () => import("./routes-DNa0Mm9_.mjs").then((n) => n.t);
 var Route$2 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
-var $$splitComponentImporter = () => import("./login-ttMHOjCo.mjs");
+var $$splitComponentImporter = () => import("./login-C59iNBqD.mjs");
 var Route$1 = createFileRoute("/login")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
 var Route = createFileRoute("/api/auth/$")({ server: { handlers: {
 	GET: ({ request }) => auth.handler(request),
@@ -395,6 +451,7 @@ var rootRouteChildren = {
 	})
 };
 var routeTree = Route$3._addFileChildren(rootRouteChildren)._addFileTypes();
+var router_exports = /* @__PURE__ */ __exportAll({ getRouter: () => getRouter });
 function getRouter() {
 	return createRouter({
 		routeTree,
@@ -402,4 +459,4 @@ function getRouter() {
 	});
 }
 //#endregion
-export { getRouter, router_B_3398yW_exports as t };
+export { useTheme as n, router_exports as t };

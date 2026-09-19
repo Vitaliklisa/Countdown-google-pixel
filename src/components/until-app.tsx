@@ -9,6 +9,9 @@ import {
   PartyPopperIcon,
   PlusIcon,
   SparklesIcon,
+  SunIcon,
+  MoonIcon,
+  CheckIcon,
   UserIcon,
   LogoutIcon,
 } from "lucide-animated";
@@ -23,6 +26,11 @@ import { CountdownFace } from "@/components/countdown-face";
 import { EventComposer } from "@/components/event-composer";
 import { ArrivalCelebration } from "@/components/arrival-celebration";
 import { InvitationsBanner } from "@/components/invitations-banner";
+import {
+  EventContextMenu,
+  duplicateDraft,
+  shareEvent,
+} from "@/components/event-context-menu";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -32,6 +40,8 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "sonner";
+import { useTheme } from "@/hooks/use-theme";
 
 type View = "home" | "compose";
 
@@ -60,19 +70,34 @@ function EventRow({
   active,
   now,
   onSelect,
+  onDuplicate,
+  onDelete,
+  onShare,
 }: {
   event: CountdownEvent;
   active: boolean;
   now: Date;
   onSelect: () => void;
+  onDuplicate: () => void;
+  onDelete: () => void;
+  onShare: () => void;
 }) {
   const past = new Date(event.at).getTime() <= now.getTime();
   return (
+    <EventContextMenu
+      event={event}
+      onDuplicate={onDuplicate}
+      onDelete={onDelete}
+      onShare={onShare}
+    >
     <button
       type="button"
       onClick={onSelect}
+      // Long-press (touch) and right-click (mouse) both open the action menu via
+      // the wrapping Radix ContextMenu — see event-context-menu.tsx.
       className={cn(
         "flex min-h-14 w-full items-center justify-between gap-3 rounded-md px-4 py-3 text-left transition-colors duration-(--motion-quick)",
+        "select-none touch-manipulation",
         active ? "bg-surface-2" : "bg-surface hover:bg-surface-2",
       )}
     >
@@ -92,6 +117,7 @@ function EventRow({
         {past ? "Passed" : "Upcoming"}
       </span>
     </button>
+    </EventContextMenu>
   );
 }
 
@@ -123,24 +149,60 @@ function EmptyState({ onCompose }: { onCompose: () => void }) {
   );
 }
 
+/**
+ * The appearance switch. Rendered both signed-in and signed-out, because the
+ * theme is a device preference, not an account one — needing to sign in before
+ * you can pick light/dark would be odd.
+ */
+function ThemeItems() {
+  const { theme, setTheme } = useTheme();
+  return (
+    <>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem onClick={() => setTheme("light")}>
+        <SunIcon size={14} className="mr-2" />
+        Light
+        {theme === "light" ? <CheckIcon size={14} className="ml-auto text-accent" /> : null}
+      </DropdownMenuItem>
+      <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <MoonIcon size={14} className="mr-2" />
+        Dark
+        {theme === "dark" ? <CheckIcon size={14} className="ml-auto text-accent" /> : null}
+      </DropdownMenuItem>
+    </>
+  );
+}
+
 function UserButton() {
   const { user } = useCurrentUserState();
 
+  // Signed out: keep the sign-in affordance, but the appearance switch still has
+  // to be reachable (see ThemeItems).
   if (!user) {
     return (
-      <Button variant="ghost" size="sm" asChild>
-        <Link to="/login" className="flex items-center gap-2">
-          <UserIcon size={16} />
-          <span>Sign in</span>
-        </Link>
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="rounded-full" aria-label="Menu">
+            <UserIcon size={16} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuItem asChild>
+            <Link to="/login" className="flex items-center gap-2">
+              <UserIcon size={14} className="mr-2" />
+              Sign in
+            </Link>
+          </DropdownMenuItem>
+          <ThemeItems />
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
+        <Button variant="ghost" size="icon" className="rounded-full" aria-label="Account">
           <Avatar className="size-8">
             <AvatarImage src={user.profileImageUrl ?? undefined} />
             <AvatarFallback className="bg-surface-2 text-[10px] font-medium text-muted">
@@ -154,6 +216,7 @@ function UserButton() {
           <span className="truncate text-xs font-medium text-fg">{user.displayName}</span>
           <span className="truncate text-[10px] text-muted">{user.primaryEmail}</span>
         </div>
+        <ThemeItems />
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut("/")} className="text-danger">
           <LogoutIcon size={14} className="mr-2" />
@@ -172,6 +235,9 @@ function HomeView({
   onEdit,
   onSelect,
   onInviteAccepted,
+  onDuplicate,
+  onDelete,
+  onShare,
 }: {
   featured: CountdownEvent | null;
   events: CountdownEvent[];
@@ -180,6 +246,9 @@ function HomeView({
   onEdit: () => void;
   onSelect: (id: string) => void;
   onInviteAccepted: () => void;
+  onDuplicate: (event: CountdownEvent) => void;
+  onDelete: (id: string) => void;
+  onShare: (event: CountdownEvent) => void;
 }) {
   const others = featured ? events.filter((event) => event.id !== featured.id) : events;
 
@@ -268,6 +337,9 @@ function HomeView({
                     active={false}
                     now={now}
                     onSelect={() => onSelect(event.id)}
+                    onDuplicate={() => onDuplicate(event)}
+                    onDelete={() => onDelete(event.id)}
+                    onShare={() => onShare(event)}
                   />
                 </li>
               ))}
@@ -400,6 +472,21 @@ export function UntilApp() {
       now={now}
       onInviteAccepted={() => {
         if (user?.id) void refresh(user.id);
+      }}
+      onDuplicate={async (event) => {
+        // Clone as a new event (title kept, date +1y), then jump straight into
+        // the composer so the copy can be tweaked before saving.
+        await addEvent(duplicateDraft(event), user?.id);
+        toast.success("Duplicated — edit and save");
+      }}
+      onDelete={async (id) => {
+        await removeEvent(id, user?.id);
+        toast.success("Event deleted");
+      }}
+      onShare={async (event) => {
+        const result = await shareEvent(event);
+        if (result === "copied") toast.success("Copied to clipboard");
+        if (result === "failed") toast.error("Could not share this event");
       }}
       onCompose={() => {
         setEditingId(null);

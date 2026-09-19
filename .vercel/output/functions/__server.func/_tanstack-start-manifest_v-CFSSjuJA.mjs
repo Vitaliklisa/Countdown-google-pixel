@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-YcI3L4ez.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-CFSSjuJA.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "C:/Users/Vi/Documents/GitHub/Countdown google pixel/src/routes/__root.tsx",
@@ -7,22 +7,22 @@ var tsrStartManifest = () => ({ routes: {
 			"/login",
 			"/api/auth/$"
 		],
-		preloads: ["/assets/index-bJEa407-.js"],
+		preloads: ["/assets/index-CbLGoSY4.js"],
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-bJEa407-.js"
+			src: "/assets/index-CbLGoSY4.js"
 		} }]
 	},
 	"/": {
 		filePath: "C:/Users/Vi/Documents/GitHub/Countdown google pixel/src/routes/index.tsx",
 		children: void 0,
-		preloads: ["/assets/routes-dPoFnJyS.js", "/assets/button-B-ydkVpi.js"]
+		preloads: ["/assets/routes-4D0bMHp5.js", "/assets/button-CDPWbY8X.js"]
 	},
 	"/login": {
 		filePath: "C:/Users/Vi/Documents/GitHub/Countdown google pixel/src/routes/login.tsx",
 		children: void 0,
-		preloads: ["/assets/login-CxZVPrYE.js", "/assets/button-B-ydkVpi.js"]
+		preloads: ["/assets/login-DW14VOfs.js", "/assets/button-CDPWbY8X.js"]
 	}
 } });
 //#endregion

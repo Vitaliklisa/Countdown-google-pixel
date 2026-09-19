@@ -84,19 +84,43 @@ function inLivePreview(): boolean {
 }
 
 /**
+ * True when running inside the Capacitor Android/iOS shell (not a browser).
+ */
+export function isNativeApp(): boolean {
+  if (typeof window === "undefined") return false;
+  const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+  return Boolean(cap?.isNativePlatform?.());
+}
+
+/**
  * Start sign-in with Google — the app's ONLY sign-in method.
  *
- * Uses Better Auth's `social` flow, which hits this app's own
- * `/api/auth/sign-in/social` and redirects to Google with the app's own client
- * id (see `socialProviders.google` in server.ts).
+ * Two paths, chosen by environment:
  *
- * The former broker `signIn()` (and its popup helpers) was removed with the
- * broker: Google is now a direct provider, so there is no `oauth2` hop and no
- * provider id to dispatch on.
+ *  • **Native (Android/iOS shell):** Google's OAuth must NOT go through the
+ *    WebView — Google blocks that with "This browser or app may not be secure",
+ *    and a browser round-trip would land the session in the system browser's
+ *    cookie jar, leaving the app signed out (the reported bug). Instead the
+ *    native Google SDK runs in-app and hands us an ID token, which we exchange
+ *    for an app session via a server function.
+ *
+ *  • **Browser (web + deployed):** the normal Better Auth `social` redirect.
+ *
+ * The native path is attempted only when `nativeGoogleConfigured()` is true, so
+ * a misconfigured build falls back to the web redirect rather than dead-ending.
  */
 export async function signInGoogle(
   opts: { callbackURL?: string; errorCallbackURL?: string } = {},
 ): Promise<void> {
+  if (isNativeApp() && nativeGoogleConfigured()) {
+    const { signInWithNativeGoogle } = await import("@/lib/auth/native-google");
+    await signInWithNativeGoogle();
+    // Session is now established in the WebView's own cookie jar; reload so the
+    // app re-reads it in a clean state.
+    window.location.href = opts.callbackURL ?? "/";
+    return;
+  }
+
   const { data, error } = await authClient.signIn.social({
     provider: "google",
     callbackURL: opts.callbackURL ?? "/",
@@ -104,6 +128,17 @@ export async function signInGoogle(
   });
   if (error) throw new Error(error.message ?? "Google sign-in failed");
   if (data?.url) window.location.href = data.url;
+}
+
+/**
+ * Whether a native (Android) Google client id was baked into the build.
+ *
+ * Published as a VITE_ flag at build time (see scripts/with-app-env.mjs) because
+ * the client cannot read GOOGLE_ANDROID_CLIENT_ID directly — and must not, since
+ * baking a client id into the bundle is only safe when it is a public one.
+ */
+export function nativeGoogleConfigured(): boolean {
+  return import.meta.env.VITE_NATIVE_GOOGLE === "true";
 }
 
 /**

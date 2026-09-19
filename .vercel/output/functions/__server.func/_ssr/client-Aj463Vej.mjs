@@ -5,7 +5,7 @@ import { t as getBaseURL } from "./url-Dj5TGTcl.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { a as atom, i as onSet, n as STORE_UNMOUNT_DELAY, r as onMount, t as listenKeys } from "../_libs/nanostores.mjs";
 import { n as defu } from "../_libs/defu.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/client-nWlBYso_.js
+//#region node_modules/.nitro/vite/services/ssr/assets/client-Aj463Vej.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var PROTO_POLLUTION_PATTERNS = {
 	proto: /"(?:_|\\u0{2}5[Ff]){2}(?:p|\\u0{2}70)(?:r|\\u0{2}72)(?:o|\\u0{2}6[Ff])(?:t|\\u0{2}74)(?:o|\\u0{2}6[Ff])(?:_|\\u0{2}5[Ff]){2}"\s*:/,
@@ -834,6 +834,8 @@ var client_exports = /* @__PURE__ */ __exportAll({
 	authEnabled: () => true,
 	getBearerToken: () => getBearerToken,
 	googleDirectEnabled: () => false,
+	isNativeApp: () => isNativeApp,
+	nativeGoogleConfigured: () => nativeGoogleConfigured,
 	signInGoogle: () => signInGoogle,
 	signOut: () => signOut
 });
@@ -882,17 +884,37 @@ function inLivePreview() {
 	return typeof window !== "undefined" && window.location.hostname.endsWith(".grok-sandbox.com");
 }
 /**
+* True when running inside the Capacitor Android/iOS shell (not a browser).
+*/
+function isNativeApp() {
+	if (typeof window === "undefined") return false;
+	const cap = window.Capacitor;
+	return Boolean(cap?.isNativePlatform?.());
+}
+/**
 * Start sign-in with Google — the app's ONLY sign-in method.
 *
-* Uses Better Auth's `social` flow, which hits this app's own
-* `/api/auth/sign-in/social` and redirects to Google with the app's own client
-* id (see `socialProviders.google` in server.ts).
+* Two paths, chosen by environment:
 *
-* The former broker `signIn()` (and its popup helpers) was removed with the
-* broker: Google is now a direct provider, so there is no `oauth2` hop and no
-* provider id to dispatch on.
+*  • **Native (Android/iOS shell):** Google's OAuth must NOT go through the
+*    WebView — Google blocks that with "This browser or app may not be secure",
+*    and a browser round-trip would land the session in the system browser's
+*    cookie jar, leaving the app signed out (the reported bug). Instead the
+*    native Google SDK runs in-app and hands us an ID token, which we exchange
+*    for an app session via a server function.
+*
+*  • **Browser (web + deployed):** the normal Better Auth `social` redirect.
+*
+* The native path is attempted only when `nativeGoogleConfigured()` is true, so
+* a misconfigured build falls back to the web redirect rather than dead-ending.
 */
 async function signInGoogle(opts = {}) {
+	if (isNativeApp() && nativeGoogleConfigured()) {
+		const { signInWithNativeGoogle } = await import("./native-google-D3dTB2tY.mjs");
+		await signInWithNativeGoogle();
+		window.location.href = opts.callbackURL ?? "/";
+		return;
+	}
 	const { data, error } = await authClient.signIn.social({
 		provider: "google",
 		callbackURL: opts.callbackURL ?? "/",
@@ -900,6 +922,16 @@ async function signInGoogle(opts = {}) {
 	});
 	if (error) throw new Error(error.message ?? "Google sign-in failed");
 	if (data?.url) window.location.href = data.url;
+}
+/**
+* Whether a native (Android) Google client id was baked into the build.
+*
+* Published as a VITE_ flag at build time (see scripts/with-app-env.mjs) because
+* the client cannot read GOOGLE_ANDROID_CLIENT_ID directly — and must not, since
+* baking a client id into the bundle is only safe when it is a public one.
+*/
+function nativeGoogleConfigured() {
+	return false;
 }
 /**
 * Sign out of THIS app's local session, clear the preview token, then redirect.

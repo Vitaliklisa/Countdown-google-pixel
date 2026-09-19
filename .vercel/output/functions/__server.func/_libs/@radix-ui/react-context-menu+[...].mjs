@@ -3,12 +3,288 @@ import { a as offset, c as useFloating, i as limitShift, l as require_react_dom,
 import { a as useCallbackRef$1, c as createContextScope, d as useComposedRefs, f as require_jsx_runtime, i as useLayoutEffect2, o as Primitive, s as dispatchDiscreteCustomEvent, u as createSlot } from "./react-avatar+[...].mjs";
 import { t as composeEventHandlers } from "../radix-ui__primitive.mjs";
 import { t as createCollection } from "../radix-ui__react-collection.mjs";
-import { t as useDirection } from "../radix-ui__react-direction.mjs";
-import { t as DismissableLayer } from "./react-dismissable-layer+[...].mjs";
 import { n as autoUpdate } from "../@floating-ui/dom+[...].mjs";
 import { __assign, __rest, __spreadArray } from "tslib";
-//#region node_modules/@radix-ui/react-focus-guards/dist/index.mjs
+//#region node_modules/@radix-ui/react-direction/dist/index.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
+var import_jsx_runtime = require_jsx_runtime();
+var __defProp$14 = Object.defineProperty;
+var __name$14 = (target, value) => __defProp$14(target, "name", {
+	value,
+	configurable: true
+});
+var DirectionContext = import_react.createContext(void 0);
+function useDirection(localDir) {
+	const globalDir = import_react.useContext(DirectionContext);
+	return localDir || globalDir || "ltr";
+}
+__name$14(useDirection, "useDirection");
+//#endregion
+//#region node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs
+var __defProp$13 = Object.defineProperty;
+var __name$13 = (target, value) => __defProp$13(target, "name", {
+	value,
+	configurable: true
+});
+var CONTEXT_UPDATE = "dismissableLayer.update";
+var POINTER_DOWN_OUTSIDE = "dismissableLayer.pointerDownOutside";
+var FOCUS_OUTSIDE = "dismissableLayer.focusOutside";
+var originalBodyPointerEvents;
+var DismissableLayerContext = import_react.createContext({
+	layers: /* @__PURE__ */ new Set(),
+	layersWithOutsidePointerEventsDisabled: /* @__PURE__ */ new Set(),
+	branches: /* @__PURE__ */ new Set(),
+	dismissableSurfaces: /* @__PURE__ */ new Set()
+});
+var DismissableLayer = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name$13(function DismissableLayer2(props, forwardedRef) {
+	const { disableOutsidePointerEvents = false, deferPointerDownOutside = false, onEscapeKeyDown, onPointerDownOutside, onFocusOutside, onInteractOutside, onDismiss, ...layerProps } = props;
+	const context = import_react.useContext(DismissableLayerContext);
+	const [node, setNode] = import_react.useState(null);
+	const ownerDocument = node?.ownerDocument ?? globalThis?.document;
+	const [, force] = import_react.useState({});
+	const composedRefs = useComposedRefs(forwardedRef, setNode);
+	const layers = Array.from(context.layers);
+	const [highestLayerWithOutsidePointerEventsDisabled] = [...context.layersWithOutsidePointerEventsDisabled].slice(-1);
+	const highestLayerWithOutsidePointerEventsDisabledIndex = highestLayerWithOutsidePointerEventsDisabled ? layers.indexOf(highestLayerWithOutsidePointerEventsDisabled) : -1;
+	const index = node ? layers.indexOf(node) : -1;
+	const isBodyPointerEventsDisabled = context.layersWithOutsidePointerEventsDisabled.size > 0;
+	const isPointerEventsEnabled = index >= highestLayerWithOutsidePointerEventsDisabledIndex;
+	const isDeferredPointerDownOutsideRef = import_react.useRef(false);
+	const pointerDownOutside = usePointerDownOutside((event) => {
+		onPointerDownOutside?.(event);
+		onInteractOutside?.(event);
+		if (!event.defaultPrevented) onDismiss?.();
+	}, {
+		ownerDocument,
+		deferPointerDownOutside,
+		isDeferredPointerDownOutsideRef,
+		dismissableSurfaces: context.dismissableSurfaces,
+		shouldHandlePointerDownOutside: import_react.useCallback((target) => {
+			if (!(target instanceof Node)) return false;
+			const isPointerDownOnBranch = [...context.branches].some((branch) => branch.contains(target));
+			return isPointerEventsEnabled && !isPointerDownOnBranch;
+		}, [context.branches, isPointerEventsEnabled])
+	});
+	const focusOutside = useFocusOutside((event) => {
+		if (deferPointerDownOutside && isDeferredPointerDownOutsideRef.current) return;
+		const target = event.target;
+		if ([...context.branches].some((branch) => branch.contains(target))) return;
+		onFocusOutside?.(event);
+		onInteractOutside?.(event);
+		if (!event.defaultPrevented) onDismiss?.();
+	}, ownerDocument);
+	const isHighestLayer = node ? index === layers.length - 1 : false;
+	const handleKeyDown = useCallbackRef$1((event) => {
+		if (event.key !== "Escape") return;
+		onEscapeKeyDown?.(event);
+		if (!event.defaultPrevented && onDismiss) {
+			event.preventDefault();
+			onDismiss();
+		}
+	});
+	import_react.useEffect(() => {
+		if (!isHighestLayer) return;
+		ownerDocument.addEventListener("keydown", handleKeyDown, { capture: true });
+		return () => ownerDocument.removeEventListener("keydown", handleKeyDown, { capture: true });
+	}, [
+		ownerDocument,
+		isHighestLayer,
+		handleKeyDown
+	]);
+	import_react.useEffect(() => {
+		if (!node) return;
+		if (disableOutsidePointerEvents) {
+			if (context.layersWithOutsidePointerEventsDisabled.size === 0) {
+				originalBodyPointerEvents = ownerDocument.body.style.pointerEvents;
+				ownerDocument.body.style.pointerEvents = "none";
+			}
+			context.layersWithOutsidePointerEventsDisabled.add(node);
+		}
+		context.layers.add(node);
+		dispatchUpdate();
+		return () => {
+			if (disableOutsidePointerEvents) {
+				context.layersWithOutsidePointerEventsDisabled.delete(node);
+				if (context.layersWithOutsidePointerEventsDisabled.size === 0) ownerDocument.body.style.pointerEvents = originalBodyPointerEvents;
+			}
+		};
+	}, [
+		node,
+		ownerDocument,
+		disableOutsidePointerEvents,
+		context
+	]);
+	import_react.useEffect(() => {
+		return () => {
+			if (!node) return;
+			context.layers.delete(node);
+			context.layersWithOutsidePointerEventsDisabled.delete(node);
+			dispatchUpdate();
+		};
+	}, [node, context]);
+	import_react.useEffect(() => {
+		const handleUpdate = /* @__PURE__ */ __name$13(() => force({}), "handleUpdate");
+		document.addEventListener(CONTEXT_UPDATE, handleUpdate);
+		return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
+	}, []);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.div, {
+		...layerProps,
+		ref: composedRefs,
+		style: {
+			pointerEvents: isBodyPointerEventsDisabled ? isPointerEventsEnabled ? "auto" : "none" : void 0,
+			...props.style
+		},
+		onFocusCapture: composeEventHandlers(props.onFocusCapture, focusOutside.onFocusCapture),
+		onBlurCapture: composeEventHandlers(props.onBlurCapture, focusOutside.onBlurCapture),
+		onPointerDownCapture: composeEventHandlers(props.onPointerDownCapture, pointerDownOutside.onPointerDownCapture)
+	});
+}, "DismissableLayer"));
+function useDismissableLayerSurface() {
+	const context = import_react.useContext(DismissableLayerContext);
+	const [node, setNode] = import_react.useState(null);
+	import_react.useEffect(() => {
+		if (!node) return;
+		context.dismissableSurfaces.add(node);
+		return () => {
+			context.dismissableSurfaces.delete(node);
+		};
+	}, [node, context.dismissableSurfaces]);
+	return setNode;
+}
+__name$13(useDismissableLayerSurface, "useDismissableLayerSurface");
+var IS_TRUE = /* @__PURE__ */ __name$13(() => true, "IS_TRUE");
+function usePointerDownOutside(onPointerDownOutside, args) {
+	const { ownerDocument = globalThis?.document, deferPointerDownOutside = false, isDeferredPointerDownOutsideRef, dismissableSurfaces, shouldHandlePointerDownOutside = IS_TRUE } = args;
+	const handlePointerDownOutside = useCallbackRef$1(onPointerDownOutside);
+	const isPointerInsideReactTreeRef = import_react.useRef(false);
+	const isPointerDownOutsideRef = import_react.useRef(false);
+	const interceptedOutsideInteractionEventsRef = import_react.useRef(/* @__PURE__ */ new Map());
+	const handleClickRef = import_react.useRef(() => {});
+	import_react.useEffect(() => {
+		function resetOutsideInteraction() {
+			isPointerDownOutsideRef.current = false;
+			isDeferredPointerDownOutsideRef.current = false;
+			interceptedOutsideInteractionEventsRef.current.clear();
+		}
+		__name$13(resetOutsideInteraction, "resetOutsideInteraction");
+		function isOutsideInteractionIntercepted() {
+			return Array.from(interceptedOutsideInteractionEventsRef.current.values()).some(Boolean);
+		}
+		__name$13(isOutsideInteractionIntercepted, "isOutsideInteractionIntercepted");
+		function handleInteractionCapture(event) {
+			if (!isPointerDownOutsideRef.current) return;
+			const target = event.target;
+			if (!(target instanceof Node && [...dismissableSurfaces].some((surface) => surface.contains(target)))) interceptedOutsideInteractionEventsRef.current.set(event.type, true);
+			if (event.type === "click") window.setTimeout(() => {
+				if (isPointerDownOutsideRef.current) handleClickRef.current();
+			}, 0);
+		}
+		__name$13(handleInteractionCapture, "handleInteractionCapture");
+		function handleInteractionBubble(event) {
+			if (isPointerDownOutsideRef.current) interceptedOutsideInteractionEventsRef.current.set(event.type, false);
+		}
+		__name$13(handleInteractionBubble, "handleInteractionBubble");
+		const handlePointerDown = /* @__PURE__ */ __name$13((event) => {
+			if (event.target && !isPointerInsideReactTreeRef.current) {
+				let handleAndDispatchPointerDownOutsideEvent2 = function() {
+					ownerDocument.removeEventListener("click", handleClickRef.current);
+					const wasOutsideInteractionIntercepted = isOutsideInteractionIntercepted();
+					resetOutsideInteraction();
+					if (!wasOutsideInteractionIntercepted) handleAndDispatchCustomEvent(POINTER_DOWN_OUTSIDE, handlePointerDownOutside, eventDetail, { discrete: true });
+				};
+				__name$13(handleAndDispatchPointerDownOutsideEvent2, "handleAndDispatchPointerDownOutsideEvent");
+				if (!shouldHandlePointerDownOutside(event.target)) {
+					ownerDocument.removeEventListener("click", handleClickRef.current);
+					resetOutsideInteraction();
+					isPointerInsideReactTreeRef.current = false;
+					return;
+				}
+				const eventDetail = { originalEvent: event };
+				isPointerDownOutsideRef.current = true;
+				isDeferredPointerDownOutsideRef.current = deferPointerDownOutside && event.button === 0;
+				interceptedOutsideInteractionEventsRef.current.clear();
+				if (!deferPointerDownOutside || event.button !== 0) handleAndDispatchPointerDownOutsideEvent2();
+				else {
+					ownerDocument.removeEventListener("click", handleClickRef.current);
+					handleClickRef.current = handleAndDispatchPointerDownOutsideEvent2;
+					ownerDocument.addEventListener("click", handleClickRef.current, { once: true });
+				}
+			} else {
+				ownerDocument.removeEventListener("click", handleClickRef.current);
+				resetOutsideInteraction();
+			}
+			isPointerInsideReactTreeRef.current = false;
+		}, "handlePointerDown");
+		const outsideInteractionEvents = [
+			"pointerup",
+			"mousedown",
+			"mouseup",
+			"touchstart",
+			"touchend",
+			"click"
+		];
+		for (const eventName of outsideInteractionEvents) {
+			ownerDocument.addEventListener(eventName, handleInteractionCapture, true);
+			ownerDocument.addEventListener(eventName, handleInteractionBubble);
+		}
+		const timerId = window.setTimeout(() => {
+			ownerDocument.addEventListener("pointerdown", handlePointerDown);
+		}, 0);
+		return () => {
+			window.clearTimeout(timerId);
+			ownerDocument.removeEventListener("pointerdown", handlePointerDown);
+			ownerDocument.removeEventListener("click", handleClickRef.current);
+			for (const eventName of outsideInteractionEvents) {
+				ownerDocument.removeEventListener(eventName, handleInteractionCapture, true);
+				ownerDocument.removeEventListener(eventName, handleInteractionBubble);
+			}
+		};
+	}, [
+		ownerDocument,
+		handlePointerDownOutside,
+		deferPointerDownOutside,
+		isDeferredPointerDownOutsideRef,
+		dismissableSurfaces,
+		shouldHandlePointerDownOutside
+	]);
+	return { onPointerDownCapture: /* @__PURE__ */ __name$13(() => isPointerInsideReactTreeRef.current = true, "onPointerDownCapture") };
+}
+__name$13(usePointerDownOutside, "usePointerDownOutside");
+function useFocusOutside(onFocusOutside, ownerDocument = globalThis?.document) {
+	const handleFocusOutside = useCallbackRef$1(onFocusOutside);
+	const isFocusInsideReactTreeRef = import_react.useRef(false);
+	import_react.useEffect(() => {
+		const handleFocus = /* @__PURE__ */ __name$13((event) => {
+			if (event.target && !isFocusInsideReactTreeRef.current) handleAndDispatchCustomEvent(FOCUS_OUTSIDE, handleFocusOutside, { originalEvent: event }, { discrete: false });
+		}, "handleFocus");
+		ownerDocument.addEventListener("focusin", handleFocus);
+		return () => ownerDocument.removeEventListener("focusin", handleFocus);
+	}, [ownerDocument, handleFocusOutside]);
+	return {
+		onFocusCapture: /* @__PURE__ */ __name$13(() => isFocusInsideReactTreeRef.current = true, "onFocusCapture"),
+		onBlurCapture: /* @__PURE__ */ __name$13(() => isFocusInsideReactTreeRef.current = false, "onBlurCapture")
+	};
+}
+__name$13(useFocusOutside, "useFocusOutside");
+function dispatchUpdate() {
+	const event = new CustomEvent(CONTEXT_UPDATE);
+	document.dispatchEvent(event);
+}
+__name$13(dispatchUpdate, "dispatchUpdate");
+function handleAndDispatchCustomEvent(name, handler, detail, { discrete }) {
+	const target = detail.originalEvent.target;
+	const event = new CustomEvent(name, {
+		bubbles: false,
+		cancelable: true,
+		detail
+	});
+	if (handler) target.addEventListener(name, handler, { once: true });
+	if (discrete) dispatchDiscreteCustomEvent(target, event);
+	else target.dispatchEvent(event);
+}
+__name$13(handleAndDispatchCustomEvent, "handleAndDispatchCustomEvent");
+//#endregion
+//#region node_modules/@radix-ui/react-focus-guards/dist/index.mjs
 var __defProp$12 = Object.defineProperty;
 var __name$12 = (target, value) => __defProp$12(target, "name", {
 	value,
@@ -55,7 +331,6 @@ function createFocusGuard() {
 __name$12(createFocusGuard, "createFocusGuard");
 //#endregion
 //#region node_modules/@radix-ui/react-focus-scope/dist/index.mjs
-var import_jsx_runtime = require_jsx_runtime();
 var __defProp$11 = Object.defineProperty;
 var __name$11 = (target, value) => __defProp$11(target, "name", {
 	value,
@@ -2320,148 +2595,162 @@ var Content2$1 = MenuContent;
 var Item2$1 = MenuItem;
 var Separator = MenuSeparator;
 //#endregion
-//#region node_modules/@radix-ui/react-dropdown-menu/dist/index.mjs
+//#region node_modules/@radix-ui/react-context-menu/dist/index.mjs
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", {
 	value,
 	configurable: true
 });
-var DROPDOWN_MENU_NAME = "DropdownMenu";
-var [createDropdownMenuContext, createDropdownMenuScope] = createContextScope(DROPDOWN_MENU_NAME, [createMenuScope]);
+var CONTEXT_MENU_NAME = "ContextMenu";
+var [createContextMenuContext, createContextMenuScope] = createContextScope(CONTEXT_MENU_NAME, [createMenuScope]);
 var useMenuScope = createMenuScope();
-var [DropdownMenuProvider, useDropdownMenuContext] = createDropdownMenuContext(DROPDOWN_MENU_NAME);
-var DropdownMenu = /* @__PURE__ */ __name((props) => {
-	const { __scopeDropdownMenu, children, dir, open: openProp, defaultOpen, onOpenChange, modal = true } = props;
-	const menuScope = useMenuScope(__scopeDropdownMenu);
-	const triggerRef = import_react.useRef(null);
+var [ContextMenuProvider, useContextMenuContext] = createContextMenuContext(CONTEXT_MENU_NAME);
+var ContextMenu = /* @__PURE__ */ __name((props) => {
+	const { __scopeContextMenu, children, onOpenChange, open: openProp, dir, modal = true } = props;
+	const hasInteractedRef = import_react.useRef(false);
 	const [open, setOpen] = useControllableState({
 		prop: openProp,
-		defaultProp: defaultOpen ?? false,
+		defaultProp: false,
 		onChange: onOpenChange,
-		caller: DROPDOWN_MENU_NAME
+		caller: CONTEXT_MENU_NAME
 	});
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DropdownMenuProvider, {
-		scope: __scopeDropdownMenu,
-		triggerId: useId(),
-		triggerRef,
-		contentId: useId(),
+	const menuScope = useMenuScope(__scopeContextMenu);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ContextMenuProvider, {
+		scope: __scopeContextMenu,
 		open,
 		onOpenChange: setOpen,
-		onOpenToggle: import_react.useCallback(() => setOpen((prevOpen) => !prevOpen), [setOpen]),
 		modal,
+		hasInteractedRef,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Root3, {
 			...menuScope,
+			dir,
 			open,
 			onOpenChange: setOpen,
-			dir,
 			modal,
 			children
 		})
 	});
-}, "DropdownMenu");
-var TRIGGER_NAME = "DropdownMenuTrigger";
-var DropdownMenuTrigger = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function DropdownMenuTrigger2(props, forwardedRef) {
-	const { __scopeDropdownMenu, disabled = false, ...triggerProps } = props;
-	const context = useDropdownMenuContext(TRIGGER_NAME, __scopeDropdownMenu);
-	const menuScope = useMenuScope(__scopeDropdownMenu);
-	const composedRefs = useComposedRefs(forwardedRef, context.triggerRef);
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Anchor2, {
-		asChild: true,
-		...menuScope,
-		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.button, {
-			type: "button",
-			id: context.triggerId,
-			"aria-haspopup": "menu",
-			"aria-expanded": context.open,
-			"aria-controls": context.open ? context.contentId : void 0,
-			"data-state": context.open ? "open" : "closed",
-			"data-disabled": disabled ? "" : void 0,
-			disabled,
-			...triggerProps,
-			ref: composedRefs,
-			onPointerDown: composeEventHandlers(props.onPointerDown, (event) => {
-				if (!disabled && event.button === 0 && event.ctrlKey === false) {
-					context.onOpenToggle();
-					if (!context.open) event.preventDefault();
-				}
-			}),
-			onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
-				if (disabled) return;
-				if (["Enter", " "].includes(event.key)) context.onOpenToggle();
-				if (event.key === "ArrowDown") context.onOpenChange(true);
-				if ([
-					"Enter",
-					" ",
-					"ArrowDown"
-				].includes(event.key)) event.preventDefault();
-			})
-		})
+}, "ContextMenu");
+var TRIGGER_NAME = "ContextMenuTrigger";
+var ContextMenuTrigger = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function ContextMenuTrigger2(props, forwardedRef) {
+	const { __scopeContextMenu, disabled = false, ...triggerProps } = props;
+	const context = useContextMenuContext(TRIGGER_NAME, __scopeContextMenu);
+	const menuScope = useMenuScope(__scopeContextMenu);
+	const [point, setPoint] = import_react.useState({
+		x: 0,
+		y: 0
 	});
-}, "DropdownMenuTrigger"));
-var DropdownMenuPortal = /* @__PURE__ */ __name((props) => {
-	const { __scopeDropdownMenu, ...portalProps } = props;
-	const menuScope = useMenuScope(__scopeDropdownMenu);
+	const virtualRef = import_react.useMemo(() => ({ current: { getBoundingClientRect: /* @__PURE__ */ __name(() => DOMRect.fromRect({
+		width: 0,
+		height: 0,
+		...point
+	}), "getBoundingClientRect") } }), [point]);
+	const longPressTimerRef = import_react.useRef(0);
+	const clearLongPress = import_react.useCallback(() => window.clearTimeout(longPressTimerRef.current), []);
+	const handleOpen = /* @__PURE__ */ __name((event) => {
+		context.hasInteractedRef.current = true;
+		setPoint({
+			x: event.clientX,
+			y: event.clientY
+		});
+		context.onOpenChange(true);
+	}, "handleOpen");
+	import_react.useEffect(() => clearLongPress, [clearLongPress]);
+	import_react.useEffect(() => void (disabled && clearLongPress()), [disabled, clearLongPress]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Anchor2, {
+		...menuScope,
+		virtualRef
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Primitive.span, {
+		"data-state": context.open ? "open" : "closed",
+		"data-disabled": disabled ? "" : void 0,
+		...triggerProps,
+		ref: forwardedRef,
+		style: {
+			WebkitTouchCallout: "none",
+			...props.style
+		},
+		onContextMenu: disabled ? props.onContextMenu : composeEventHandlers(props.onContextMenu, (event) => {
+			clearLongPress();
+			handleOpen(event);
+			event.preventDefault();
+		}),
+		onPointerDown: disabled ? props.onPointerDown : composeEventHandlers(props.onPointerDown, whenTouchOrPen((event) => {
+			clearLongPress();
+			if (context.open) context.onOpenChange(false);
+			longPressTimerRef.current = window.setTimeout(() => handleOpen(event), 700);
+		})),
+		onPointerMove: disabled ? props.onPointerMove : composeEventHandlers(props.onPointerMove, whenTouchOrPen(clearLongPress)),
+		onPointerCancel: disabled ? props.onPointerCancel : composeEventHandlers(props.onPointerCancel, whenTouchOrPen(clearLongPress)),
+		onPointerUp: disabled ? props.onPointerUp : composeEventHandlers(props.onPointerUp, whenTouchOrPen(clearLongPress))
+	})] });
+}, "ContextMenuTrigger"));
+var ContextMenuPortal = /* @__PURE__ */ __name((props) => {
+	const { __scopeContextMenu, ...portalProps } = props;
+	const menuScope = useMenuScope(__scopeContextMenu);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Portal, {
 		...menuScope,
 		...portalProps
 	});
-}, "DropdownMenuPortal");
-var CONTENT_NAME = "DropdownMenuContent";
-var DropdownMenuContent = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function DropdownMenuContent2(props, forwardedRef) {
-	const { __scopeDropdownMenu, ...contentProps } = props;
-	const context = useDropdownMenuContext(CONTENT_NAME, __scopeDropdownMenu);
-	const menuScope = useMenuScope(__scopeDropdownMenu);
+}, "ContextMenuPortal");
+var CONTENT_NAME = "ContextMenuContent";
+var ContextMenuContent = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function ContextMenuContent2(props, forwardedRef) {
+	const { __scopeContextMenu, ...contentProps } = props;
+	const context = useContextMenuContext(CONTENT_NAME, __scopeContextMenu);
+	const menuScope = useMenuScope(__scopeContextMenu);
 	const hasInteractedOutsideRef = import_react.useRef(false);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Content2$1, {
-		id: context.contentId,
-		"aria-labelledby": context.triggerId,
 		...menuScope,
 		...contentProps,
 		ref: forwardedRef,
-		onCloseAutoFocus: composeEventHandlers(props.onCloseAutoFocus, (event) => {
-			if (!hasInteractedOutsideRef.current) context.triggerRef.current?.focus();
+		side: "right",
+		sideOffset: 2,
+		align: "start",
+		onCloseAutoFocus: (event) => {
+			props.onCloseAutoFocus?.(event);
+			if (!event.defaultPrevented && hasInteractedOutsideRef.current) event.preventDefault();
 			hasInteractedOutsideRef.current = false;
-			event.preventDefault();
-		}),
-		onInteractOutside: composeEventHandlers(props.onInteractOutside, (event) => {
-			const originalEvent = event.detail.originalEvent;
-			const ctrlLeftClick = originalEvent.button === 0 && originalEvent.ctrlKey === true;
-			const isRightClick = originalEvent.button === 2 || ctrlLeftClick;
-			if (!context.modal || isRightClick) hasInteractedOutsideRef.current = true;
-		}),
+		},
+		onInteractOutside: (event) => {
+			props.onInteractOutside?.(event);
+			if (!event.defaultPrevented && !context.modal) hasInteractedOutsideRef.current = true;
+		},
 		style: {
 			...props.style,
-			"--radix-dropdown-menu-content-transform-origin": "var(--radix-popper-transform-origin)",
-			"--radix-dropdown-menu-content-available-width": "var(--radix-popper-available-width)",
-			"--radix-dropdown-menu-content-available-height": "var(--radix-popper-available-height)",
-			"--radix-dropdown-menu-trigger-width": "var(--radix-popper-anchor-width)",
-			"--radix-dropdown-menu-trigger-height": "var(--radix-popper-anchor-height)"
+			"--radix-context-menu-content-transform-origin": "var(--radix-popper-transform-origin)",
+			"--radix-context-menu-content-available-width": "var(--radix-popper-available-width)",
+			"--radix-context-menu-content-available-height": "var(--radix-popper-available-height)",
+			"--radix-context-menu-trigger-width": "var(--radix-popper-anchor-width)",
+			"--radix-context-menu-trigger-height": "var(--radix-popper-anchor-height)"
 		}
 	});
-}, "DropdownMenuContent"));
-var DropdownMenuItem = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function DropdownMenuItem2(props, forwardedRef) {
-	const { __scopeDropdownMenu, ...itemProps } = props;
-	const menuScope = useMenuScope(__scopeDropdownMenu);
+}, "ContextMenuContent"));
+var ContextMenuItem = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function ContextMenuItem2(props, forwardedRef) {
+	const { __scopeContextMenu, ...itemProps } = props;
+	const menuScope = useMenuScope(__scopeContextMenu);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Item2$1, {
 		...menuScope,
 		...itemProps,
 		ref: forwardedRef
 	});
-}, "DropdownMenuItem"));
-var DropdownMenuSeparator = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function DropdownMenuSeparator2(props, forwardedRef) {
-	const { __scopeDropdownMenu, ...separatorProps } = props;
-	const menuScope = useMenuScope(__scopeDropdownMenu);
+}, "ContextMenuItem"));
+var ContextMenuSeparator = /* @__PURE__ */ import_react.forwardRef(/* @__PURE__ */ __name(function ContextMenuSeparator2(props, forwardedRef) {
+	const { __scopeContextMenu, ...separatorProps } = props;
+	const menuScope = useMenuScope(__scopeContextMenu);
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Separator, {
 		...menuScope,
 		...separatorProps,
 		ref: forwardedRef
 	});
-}, "DropdownMenuSeparator"));
-var Root2 = DropdownMenu;
-var Trigger = DropdownMenuTrigger;
-var Portal2 = DropdownMenuPortal;
-var Content2 = DropdownMenuContent;
-var Item2 = DropdownMenuItem;
-var Separator2 = DropdownMenuSeparator;
+}, "ContextMenuSeparator"));
+function whenTouchOrPen(handler) {
+	return (event) => event.pointerType !== "mouse" ? handler(event) : void 0;
+}
+__name(whenTouchOrPen, "whenTouchOrPen");
+var Root2 = ContextMenu;
+var Trigger = ContextMenuTrigger;
+var Portal2 = ContextMenuPortal;
+var Content2 = ContextMenuContent;
+var Item2 = ContextMenuItem;
+var Separator2 = ContextMenuSeparator;
 //#endregion
-export { FocusScope as _, Separator2 as a, hideOthers as c, Portal$1 as d, Anchor as f, useId as g, createPopperScope as h, Root2 as i, useControllableState as l, Root2$1 as m, Item2 as n, Trigger as o, Content as p, Portal2 as r, ReactRemoveScroll as s, Content2 as t, Presence as u, useFocusGuards as v };
+export { useId as C, useDirection as D, DismissableLayer as E, createPopperScope as S, useFocusGuards as T, Presence as _, Separator2 as a, Content as b, Content2$1 as c, Root3 as d, Separator as f, useControllableState as g, hideOthers as h, Root2 as i, Item2$1 as l, ReactRemoveScroll as m, Item2 as n, Trigger as o, createMenuScope as p, Portal2 as r, Anchor2 as s, Content2 as t, Portal as u, Portal$1 as v, FocusScope as w, Root2$1 as x, Anchor as y };

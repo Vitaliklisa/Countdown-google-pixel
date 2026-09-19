@@ -108,7 +108,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-YcI3L4ez.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-CFSSjuJA.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -130,43 +130,47 @@ async function getStartManifest(matchedRoutes) {
 var manifest = {
 	"2d5337827bcfd9450626d99538cfd43bde3592f981579a2f28987839a42155d0": {
 		functionName: "registerDeviceToken_createServerFn_handler",
-		importer: () => import("./push.api-Cjyp5zEd.mjs")
+		importer: () => import("./push.api-B_wyPUNv.mjs")
+	},
+	"3036d67248778fc8b39c18a198fca95306af8da3fadac8043e1a3e3a25088f35": {
+		functionName: "signInWithIdToken_createServerFn_handler",
+		importer: () => import("./native-exchange.api-B_vmAPvR.mjs")
 	},
 	"571f8bdb3ed6c441b77e1a98027422fa39ff4a9df4196e3b3e396d5b3d85cd17": {
 		functionName: "rejectInvitation_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"8afbac895d59a41477d32649fe71a1da0c8c6fd440647bc3bc09500df9664b82": {
 		functionName: "listEvents_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"9053c9586e5893fe0c4641ff5b841ec184a4b8d14022c905331a3df79c9d0ad5": {
 		functionName: "getInvitations_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"9779599942a6bef44eb071567bdb5e1f0030481baa5c9369d4dab8d7f7911996": {
 		functionName: "acceptInvitation_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"b065731475f096ab4fc6e8da4951a0f0fdc92502c9a97795ca3c01c7dc28ffcb": {
 		functionName: "unregisterDeviceToken_createServerFn_handler",
-		importer: () => import("./push.api-Cjyp5zEd.mjs")
+		importer: () => import("./push.api-B_wyPUNv.mjs")
 	},
 	"bf58e941e166b21a858534c9bd7fe29ef1d4e42b9ca8ecf75787328d176b896e": {
 		functionName: "updateEvent_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"f21ae7d2695373c2f548b37306591c539f7a5e8e94f571522c2712a09232e856": {
 		functionName: "createEvent_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"fc56863d614659ca6b116680c799d86dfe625934fcc576736a056b53b3ed90d6": {
 		functionName: "inviteUser_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	},
 	"fda746ddc54219a8ce2260a10efc5382af55b6851385e578118f3ba0a8859242": {
 		functionName: "deleteEvent_createServerFn_handler",
-		importer: () => import("./events.api-BvtGQmxm.mjs")
+		importer: () => import("./events.api-QDn11BpX.mjs")
 	}
 };
 async function getServerFnById(id, access) {
@@ -1436,7 +1440,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-B_3398yW.mjs").then((n) => n.t),
+		import("./router-BSXbvxBx.mjs").then((n) => n.t),
 		import("./start-5Z2QO8AU.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);

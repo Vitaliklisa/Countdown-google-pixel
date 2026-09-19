@@ -102,6 +102,98 @@ var ChevronDown = createLucideIcon("chevron-down", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Copy = createLucideIcon("copy", [["rect", {
+	width: "14",
+	height: "14",
+	x: "8",
+	y: "8",
+	rx: "2",
+	ry: "2",
+	key: "17jyea"
+}], ["path", {
+	d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2",
+	key: "zix9uf"
+}]]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Share2 = createLucideIcon("share-2", [
+	["circle", {
+		cx: "18",
+		cy: "5",
+		r: "3",
+		key: "gq8acd"
+	}],
+	["circle", {
+		cx: "6",
+		cy: "12",
+		r: "3",
+		key: "w7nqdw"
+	}],
+	["circle", {
+		cx: "18",
+		cy: "19",
+		r: "3",
+		key: "1xt0gg"
+	}],
+	["line", {
+		x1: "8.59",
+		x2: "15.42",
+		y1: "13.51",
+		y2: "17.49",
+		key: "47mynk"
+	}],
+	["line", {
+		x1: "15.41",
+		x2: "8.59",
+		y1: "6.51",
+		y2: "10.49",
+		key: "1n3mei"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Trash2 = createLucideIcon("trash-2", [
+	["path", {
+		d: "M3 6h18",
+		key: "d0wm0j"
+	}],
+	["path", {
+		d: "M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6",
+		key: "4alrt4"
+	}],
+	["path", {
+		d: "M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2",
+		key: "v07s0e"
+	}],
+	["line", {
+		x1: "10",
+		x2: "10",
+		y1: "11",
+		y2: "17",
+		key: "1uufr5"
+	}],
+	["line", {
+		x1: "14",
+		x2: "14",
+		y1: "11",
+		y2: "17",
+		key: "xtxkd"
+	}]
+]);
+/**
+* @license lucide-react v0.510.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var TriangleAlert = createLucideIcon("triangle-alert", [
 	["path", {
 		d: "m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",
@@ -117,4 +209,4 @@ var TriangleAlert = createLucideIcon("triangle-alert", [
 	}]
 ]);
 //#endregion
-export { ChevronDown as n, Check as r, TriangleAlert as t };
+export { ChevronDown as a, Copy as i, Trash2 as n, Check as o, Share2 as r, TriangleAlert as t };
